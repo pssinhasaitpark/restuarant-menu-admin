@@ -11,18 +11,20 @@ const CustomerList = () => {
   useEffect(() => {
     dispatch(fetchCustomers());
   }, [dispatch]);
+if(loading){
+  <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "50vh" }}>
+  <CircularProgress />
+</Box>
+}
+if(error){
+  <Typography variant="h6" color="error">
+  {error.message}
+</Typography>
+}
 
   return (
     <Box sx={{ p: 3, textAlign: "center", mt: 4 }}>
-      {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "50vh" }}>
-          <CircularProgress />
-        </Box>
-      ) : error ? (
-        <Typography variant="h6" color="error">
-          {error}
-        </Typography>
-      ) : customers.length === 0 ? (
+    {customers.length === 0 ? (
         <Box
           sx={{
             display: "flex",

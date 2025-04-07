@@ -42,11 +42,12 @@ const Sidebar = ({ drawerOpen, toggleDrawer}) => {
     { text: "Dashboard", icon: <Dashboard />, path: "/" },
     { text: "Menu", icon: <RestaurantMenu />, path: "/menulist" },
     { text: "Customers Orders", icon: <Group />, path: "/customers" },
-    { text: "Feedback", icon: <Group />, path: "/review" },
-    { text: "Customers Review", icon: <Group />, path: "/review" },
-    { text: "Staff", icon: <Group />, path: "/staffform" },
-    { text: "salary", icon: <Group />, path: "/customers" },
-    //  { text: "Restaurant Table List", icon: <TableChart />, path: "/createlist" },
+    // { text: "Feedback", icon: <Group />, path: "/review" },
+    // { text: "Customers Review", icon: <Group />, path: "/review" },
+    // { text: "Staff", icon: <Group />, path: "/staffform" },
+    // { text: "salary", icon: <Group />, path: "/customers" },
+    { text: "menu", icon: <Group />, path: "/menu" },
+     { text: "Restaurant Table List", icon: <TableChart />, path: "/createlist" },
   ];
 
   // Conditionally add the Restaurant Form item based on user role
@@ -54,8 +55,8 @@ const Sidebar = ({ drawerOpen, toggleDrawer}) => {
     menuItems.push({ text: "Restaurants", icon: <TableChart />, path: "/restaurantform" });
     menuItems.push({ text: "Feedback", icon: <TableChart />, path: "/customers" });
     menuItems.push({ text: "Document", icon: <TableChart />, path: "/menulist" });
-    menuItems.push({ text: "contact US", icon: <TableChart />, path: "/restaurantform" });
-    menuItems.push({ text: "support System", icon: <TableChart />, path: "/restaurantform" });
+    // menuItems.push({ text: "contact US", icon: <TableChart />, path: "/restaurantform" });
+    // menuItems.push({ text: "support System", icon: <TableChart />, path: "/restaurantform" });
   }
 
   return (

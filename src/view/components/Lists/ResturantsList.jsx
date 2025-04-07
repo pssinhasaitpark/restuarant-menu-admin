@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -23,14 +24,23 @@ const RestaurantList = () => {
   const { restaurants, loading, error } = useSelector(
     (state) => state.restaurant
   );
+
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [deleteRestaurantId, setDeleteRestaurantId] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [editingRestaurant, setEditingRestaurant] = useState(null);
+  const [editLoading, setEditLoading] = useState(false);
 
   useEffect(() => {
     dispatch(fetchRestaurants());
   }, [dispatch]);
+
+  // Log when editingRestaurant changes
+  useEffect(() => {
+    if (editingRestaurant) {
+      console.log("Updated editingRestaurant:", editingRestaurant);
+    }
+  }, [editingRestaurant]);
 
   const handleOpenDialog = () => {
     setEditingRestaurant(null);
@@ -55,11 +65,17 @@ const RestaurantList = () => {
 
   const handleEditRestaurant = async (id) => {
     try {
+      setEditLoading(true);
+
       const response = await dispatch(fetchRestaurantById(id)).unwrap();
-      setEditingRestaurant(response);
-      setOpenDialog(true);
+      const restaurantData = response[0]; // ✅ Assuming response is a single object
+
+      setEditingRestaurant(restaurantData); // ✅ Set data
+      setOpenDialog(true); // ✅ Open dialog AFTER data is set
     } catch (error) {
       console.error("Failed to fetch restaurant details:", error);
+    } finally {
+      setEditLoading(false);
     }
   };
 
@@ -90,7 +106,7 @@ const RestaurantList = () => {
         onConfirm={handleConfirmDelete}
       />
 
-      {loading ? (
+      {loading || editLoading ? (
         <Box
           sx={{
             display: "flex",
@@ -120,19 +136,32 @@ const RestaurantList = () => {
         maxWidth="sm"
         fullWidth
       >
-        <RestaurantForm
-          initialValues={
-            editingRestaurant || {
-              restaurant_name: "",
-              owner_name: "",
-              email: "",
-              mobile: "",
-              location: "",
+        {editLoading ? (
+          <Box sx={{ p: 3, textAlign: "center" }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <RestaurantForm
+            initialValues={
+              editingRestaurant
+                ? editingRestaurant
+                : {
+                    restaurant_name: "",
+                    owner_name: "",
+                    email: "",
+                    mobile: "",
+                    location: "",
+                    opening_time: "",
+                    closing_time: "",
+                    logo: "",
+                    images: [],
+                  }
             }
-          }
-          onSave={handleSaveRestaurant}
-          onClose={handleCloseDialog}
-        />
+            onSave={handleSaveRestaurant}
+            onClose={handleCloseDialog}
+            enableReinitialize
+          />
+        )}
       </Dialog>
     </Box>
   );
