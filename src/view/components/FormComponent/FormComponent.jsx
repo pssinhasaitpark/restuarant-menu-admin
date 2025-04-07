@@ -115,7 +115,15 @@
 
 import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
-import { TextField, Button, Box, CircularProgress, Typography, IconButton, Grid } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Box,
+  CircularProgress,
+  Typography,
+  IconButton,
+  Grid,
+} from "@mui/material";
 import { Delete } from "@mui/icons-material";
 
 const FormComponent = ({
@@ -129,15 +137,17 @@ const FormComponent = ({
   buttonText,
   specific,
 }) => {
-  const [forms, setForms] = useState([{ id: Date.now(), values: initialValues }]);
+  const [forms, setForms] = useState([
+    { id: Date.now(), values: initialValues },
+  ]);
 
-  // Function to add a new form with conditionally included fields
   const handleAddForm = () => {
-    const newFormValues = specific ? { itemName: "", itemPrice: "" } : initialValues;
+    const newFormValues = specific
+      ? { itemName: "", itemPrice: "" }
+      : initialValues;
     setForms([...forms, { id: Date.now(), values: newFormValues }]);
   };
 
-  // Function to remove a form
   const handleRemoveForm = (id) => {
     setForms(forms.filter((form) => form.id !== id));
   };
@@ -162,40 +172,107 @@ const FormComponent = ({
         <Form>
           {forms.map((form, index) => (
             <Box key={form.id} mb={3} p={2}>
-              <Box display="flex" justifyContent="space-between" alignItems="center">
-                {!isadd ? <Typography variant="h6">Form {index + 1}</Typography> : <Box></Box>}
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                {!isadd ? (
+                  <Typography variant="h6">Form {index + 1}</Typography>
+                ) : (
+                  <Box></Box>
+                )}
                 {forms.length > 1 && (
-                  <IconButton onClick={() => handleRemoveForm(form.id)} color="error">
+                  <IconButton
+                    onClick={() => handleRemoveForm(form.id)}
+                    color="error"
+                  >
                     <Delete />
                   </IconButton>
                 )}
               </Box>
 
-              {/* Grid layout for fields */}
-              <Grid container spacing={2}>
-                {fields
-                  .filter((field) =>
-                    specific && index > 0
-                      ? field.name === "item_name" || field.name === "item_price" || field.name === "item_image"
-                      : true
-                  )
-                  .map((field) => (
-                    <Grid key={field.name}>
-                      <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-                        {field.label}
-                      </Typography>
-                      <Field
-                        as={TextField}
-                        name={`form_${form.id}.${field.name}`}
-                        type={field.type || "text"}
-                        fullWidth
-                        variant="outlined"
-                        error={touched?.[`form_${form.id}`]?.[field.name] && Boolean(errors?.[`form_${form.id}`]?.[field.name])}
-                        helperText={touched?.[`form_${form.id}`]?.[field.name] && errors?.[`form_${form.id}`]?.[field.name]}
-                      />
-                    </Grid>
-                  ))}
-              </Grid>
+              {isadd ? (
+                // Vertical layout for Login page or similar
+                <Box>
+                  {fields
+                    .filter((field) =>
+                      specific && index > 0
+                        ? field.name === "item_name" ||
+                          field.name === "item_price" ||
+                          field.name === "item_image"
+                        : true
+                    )
+                    .map((field) => (
+                      <Box key={field.name} mb={2}>
+                        <Typography
+                          variant="subtitle1"
+                          fontWeight="bold"
+                          gutterBottom
+                        >
+                          {field.label}
+                        </Typography>
+                        <Field
+                          as={TextField}
+                          name={`form_${form.id}.${field.name}`}
+                          type={field.type || "text"}
+                          fullWidth
+                          variant="outlined"
+                          error={
+                            touched?.[`form_${form.id}`]?.[field.name] &&
+                            Boolean(
+                              errors?.[`form_${form.id}`]?.[field.name]
+                            )
+                          }
+                          helperText={
+                            touched?.[`form_${form.id}`]?.[field.name] &&
+                            errors?.[`form_${form.id}`]?.[field.name]
+                          }
+                        />
+                      </Box>
+                    ))}
+                </Box>
+              ) : (
+                // Grid layout for all other forms
+                <Grid container spacing={2}>
+                  {fields
+                    .filter((field) =>
+                      specific && index > 0
+                        ? field.name === "item_name" ||
+                          field.name === "item_price" ||
+                          field.name === "item_image"
+                        : true
+                    )
+                    .map((field) => (
+                      <Grid item xs={12} sm={6} key={field.name}>
+                        <Typography
+                          variant="subtitle1"
+                          fontWeight="bold"
+                          gutterBottom
+                        >
+                          {field.label}
+                        </Typography>
+                        <Field
+                          as={TextField}
+                          name={`form_${form.id}.${field.name}`}
+                          type={field.type || "text"}
+                          fullWidth
+                          variant="outlined"
+                          error={
+                            touched?.[`form_${form.id}`]?.[field.name] &&
+                            Boolean(
+                              errors?.[`form_${form.id}`]?.[field.name]
+                            )
+                          }
+                          helperText={
+                            touched?.[`form_${form.id}`]?.[field.name] &&
+                            errors?.[`form_${form.id}`]?.[field.name]
+                          }
+                        />
+                      </Grid>
+                    ))}
+                </Grid>
+              )}
 
               {error && (
                 <Typography color="error" sx={{ mt: 2 }}>
@@ -214,7 +291,7 @@ const FormComponent = ({
             </Box>
           )}
 
-          {/* Submit Button (Only Once) */}
+          {/* Submit Button */}
           <Box mt={3} textAlign="center">
             <Button
               type="submit"
@@ -227,7 +304,11 @@ const FormComponent = ({
               }}
               disabled={loading || isSubmitting}
             >
-              {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : buttonText || "Submit"}
+              {loading ? (
+                <CircularProgress size={24} sx={{ color: "white" }} />
+              ) : (
+                buttonText || "Submit"
+              )}
             </Button>
           </Box>
         </Form>
@@ -237,6 +318,7 @@ const FormComponent = ({
 };
 
 export default FormComponent;
+
 
 
 

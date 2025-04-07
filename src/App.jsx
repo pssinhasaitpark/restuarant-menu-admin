@@ -13,6 +13,7 @@ import CreatetableForm from "./view/components/Forms/CreateTableForm";
 import Profile from "./view/pages/Profile/Profile"
 import Review from "./view/pages/Review/Review"
 import StaffForm from "./view/pages/StaffForm/StaffForm";
+import Menu from "./view/components/Forms/menu";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/review" element={<Review />} />
         <Route path="/staffform" element={<StaffForm />} />
+        <Route path="/menu" element={<Menu />} />
       </Route>
     </Routes>
   );
