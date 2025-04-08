@@ -10,6 +10,8 @@ import {
 import ListComponent from "../ListComponents/ListComponents";
 import ConfirmationDialog from "../ConfirtmationDialog";
 import CreateTableForm from "../Forms/CreateTableForm";
+import CustomPagination from "../CustomPagination/CustomPagination"; 
+
 import {
   fetchTables,
   createTable,
@@ -26,9 +28,20 @@ const RestaurantTableList = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [editingTable, setEditingTable] = useState(null);
 
+ 
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 4;
+
   useEffect(() => {
     dispatch(fetchTables());
   }, [dispatch]);
+
+
+  useEffect(() => {
+    if (page > Math.ceil(tables.length / itemsPerPage)) {
+      setPage(1);
+    }
+  }, [tables, page, itemsPerPage]);
 
   const handleOpenDialog = () => {
     setEditingTable(null);
@@ -67,6 +80,10 @@ const RestaurantTableList = () => {
     }
   };
 
+  const startIndex = (page - 1) * itemsPerPage;
+  const paginatedTables = tables.slice(startIndex, startIndex + itemsPerPage);
+  const pageCount = Math.ceil(tables.length / itemsPerPage);
+
   return (
     <Box sx={{ p: 3, textAlign: "center", mt: 4 }}>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 3 }}>
@@ -97,16 +114,23 @@ const RestaurantTableList = () => {
           {error}
         </Typography>
       ) : (
-        <ListComponent
-          items={tables}
-          onEdit={handleEditTable}
-          onDelete={handleDeleteTable}
-          isTable={true}
-        />
+        <>
+          <ListComponent
+            items={paginatedTables}
+            onEdit={handleEditTable}
+            onDelete={handleDeleteTable}
+            isTable={true}
+          />
+          <CustomPagination
+            page={page}
+            count={pageCount}
+            onChange={(_, value) => setPage(value)}
+          />
+        </>
       )}
 
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" >
-        <Box sx={{ p:2 }}>
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm">
+        <Box sx={{ p: 2 }}>
           <CreateTableForm onSave={handleSaveTable} onClose={handleCloseDialog} />
         </Box>
       </Dialog>

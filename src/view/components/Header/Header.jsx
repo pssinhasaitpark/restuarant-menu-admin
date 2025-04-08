@@ -1,5 +1,3 @@
-
-
 import React, { useState, useContext } from "react";
 import {
   AppBar,
@@ -22,7 +20,7 @@ import {
   Bedtime,
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
-import { ThemeContext } from "../../contexts/ThemeContext"; // Import ThemeContext
+import { ThemeContext } from "../../contexts/ThemeContext";
 
 const SearchBar = styled("div")(({ theme }) => ({
   display: "flex",
