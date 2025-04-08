@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   Dashboard,
@@ -24,7 +23,7 @@ import {
 } from "@mui/material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const Sidebar = ({ drawerOpen, toggleDrawer}) => {
+const Sidebar = ({ drawerOpen, toggleDrawer }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -36,7 +35,6 @@ const Sidebar = ({ drawerOpen, toggleDrawer}) => {
   };
   const userType = localStorage.getItem("userType");
 
-
   // Define menu items
   const menuItems = [
     { text: "Dashboard", icon: <Dashboard />, path: "/" },
@@ -46,15 +44,31 @@ const Sidebar = ({ drawerOpen, toggleDrawer}) => {
     // { text: "Customers Review", icon: <Group />, path: "/review" },
     // { text: "Staff", icon: <Group />, path: "/staffform" },
     // { text: "salary", icon: <Group />, path: "/customers" },
-    { text: "menu", icon: <Group />, path: "/menu" },
-     { text: "Restaurant Table List", icon: <TableChart />, path: "/createlist" },
+
+    {
+      text: "Restaurant Table List",
+      icon: <TableChart />,
+      path: "/createlist",
+    },
   ];
 
   // Conditionally add the Restaurant Form item based on user role
   if (userType === "super_admin") {
-    menuItems.push({ text: "Restaurants", icon: <TableChart />, path: "/restaurantform" });
-    menuItems.push({ text: "Feedback", icon: <TableChart />, path: "/customers" });
-    menuItems.push({ text: "Document", icon: <TableChart />, path: "/menulist" });
+    menuItems.push({
+      text: "Restaurants",
+      icon: <TableChart />,
+      path: "/restaurantform",
+    });
+    menuItems.push({
+      text: "Feedback",
+      icon: <TableChart />,
+      path: "/customers",
+    });
+    menuItems.push({
+      text: "Document",
+      icon: <TableChart />,
+      path: "/menulist",
+    });
     // menuItems.push({ text: "contact US", icon: <TableChart />, path: "/restaurantform" });
     // menuItems.push({ text: "support System", icon: <TableChart />, path: "/restaurantform" });
   }
@@ -112,13 +126,18 @@ const Sidebar = ({ drawerOpen, toggleDrawer}) => {
             selected={location.pathname === item.path}
             onClick={isMobile ? toggleDrawer : undefined}
             sx={{
-              backgroundColor: location.pathname === item.path ? "#d4edda" : "transparent",
+              backgroundColor:
+                location.pathname === item.path ? "#d4edda" : "transparent",
               color: location.pathname === item.path ? "#155724" : "inherit",
               borderRadius: 1,
               marginBottom: 1,
             }}
           >
-            <ListItemIcon sx={{ color: location.pathname === item.path ? "#28a745" : "inherit" }}>
+            <ListItemIcon
+              sx={{
+                color: location.pathname === item.path ? "#28a745" : "inherit",
+              }}
+            >
               {item.icon}
             </ListItemIcon>
             <ListItemText primary={item.text} />
@@ -145,4 +164,3 @@ const Sidebar = ({ drawerOpen, toggleDrawer}) => {
 };
 
 export default Sidebar;
-

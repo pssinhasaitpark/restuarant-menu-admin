@@ -1,70 +1,17 @@
-// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import API from "../axios/axios";
-
-// export const createMenuItem = createAsyncThunk(
-//   "createmenu/create",
-//   async (formData, { rejectWithValue }) => {
-//     try {
-//       const response = await API.post("/menu_management", formData, {
-//         headers: {
-//           "Content-Type": "multipart/form-data",
-//         },
-//       });
-//       return response.data;
-//     } catch (error) {
-//       return rejectWithValue(error.response?.data || "Something went wrong");
-//     }
-//   }
-// );
-
-// const createmenuSlice = createSlice({
-//   name: "createmenu",
-//   initialState: {
-//     loading: false,
-//     error: null,
-//     success: false,
-//   },
-//   reducers: {
-//     resetMenuState: (state) => {
-//       state.loading = false;
-//       state.error = null;
-//       state.success = false;
-//     },
-//   },
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(createMenuItem.pending, (state) => {
-//         state.loading = true;
-//       })
-//       .addCase(createMenuItem.fulfilled, (state) => {
-//         state.loading = false;
-//         state.success = true;
-//       })
-//       .addCase(createMenuItem.rejected, (state, action) => {
-//         state.loading = false;
-//         state.error = action.payload;
-//       });
-//   },
-// });
-
-// export const { resetMenuState } = createmenuSlice.actions;
-// export default createmenuSlice.reducer;
-
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import API from "../axios/axios";
 
 // Create Menu Item
 export const createMenuItem = createAsyncThunk(
   "createmenu/create",
-  async (formData, { rejectWithValue,dispatch }) => {
+  async (formData, { rejectWithValue, dispatch }) => {
     try {
       const response = await API.post("/menu_management", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      dispatch(getMenuItems())
+      dispatch(getMenuItems());
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Something went wrong");
@@ -75,14 +22,18 @@ export const createMenuItem = createAsyncThunk(
 // Update Menu Item
 export const updateMenuItem = createAsyncThunk(
   "createmenu/update",
-  async ({ id, formData }, { rejectWithValue,dispatch }) => {
+  async ({ id, formData }, { rejectWithValue, dispatch }) => {
     try {
-      const response = await API.post(`/menu_management/${id}?_method=PUT`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      dispatch(getMenuItems())
+      const response = await API.post(
+        `/menu_management/${id}?_method=PUT`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      dispatch(getMenuItems());
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Something went wrong");
@@ -93,10 +44,10 @@ export const updateMenuItem = createAsyncThunk(
 // Delete Menu Item
 export const deleteMenuItem = createAsyncThunk(
   "createmenu/delete",
-  async (id, { rejectWithValue,dispatch }) => {
+  async (id, { rejectWithValue, dispatch }) => {
     try {
-      const response = await API.delete(`/menu_management/${id}`);
-      dispatch(getMenuItems())
+      const response = await API.delete(`/menu_management/menu_item/${id}`);
+      dispatch(getMenuItems());
       return { id, message: response.data.message };
     } catch (error) {
       return rejectWithValue(error.response?.data || "Something went wrong");
@@ -116,6 +67,31 @@ export const getMenuItems = createAsyncThunk(
     }
   }
 );
+// Get Menu Item By ID
+export const getMenuItemById = createAsyncThunk(
+  "createmenu/getById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await API.get(`/menu_management/${id}`);
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Something went wrong");
+    }
+  }
+);
+
+// Fetch QR Code
+export const fetchQrCode = createAsyncThunk(
+  "createmenu/fetchQrCode",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await API.get("/menu_management/qr_code");
+      return response.data.data.qr_code_url;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Something went wrong");
+    }
+  }
+);
 
 const createmenuSlice = createSlice({
   name: "createmenu",
@@ -125,6 +101,8 @@ const createmenuSlice = createSlice({
     error: null,
     success: false,
     deletedId: null,
+    qrCodeUrl: null,
+    selectedItem: null,
   },
   reducers: {
     resetMenuState: (state) => {
@@ -157,7 +135,9 @@ const createmenuSlice = createSlice({
       .addCase(updateMenuItem.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
-        const index = state.items.findIndex((item) => item.id === action.payload.id);
+        const index = state.items.findIndex(
+          (item) => item.id === action.payload.id
+        );
         if (index !== -1) {
           state.items[index] = action.payload;
         }
@@ -175,7 +155,9 @@ const createmenuSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.deletedId = action.payload.id;
-        state.items = state.items.filter((item) => item.id !== action.payload.id);
+        state.items = state.items.filter(
+          (item) => item.id !== action.payload.id
+        );
       })
       .addCase(deleteMenuItem.rejected, (state, action) => {
         state.loading = false;
@@ -192,6 +174,33 @@ const createmenuSlice = createSlice({
         state.items = action.payload;
       })
       .addCase(getMenuItems.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Get Menu Item by ID
+      .addCase(getMenuItemById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.selectedItem = null;
+      })
+      .addCase(getMenuItemById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.selectedItem = action.payload;
+      })
+      .addCase(getMenuItemById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // QR Code
+      .addCase(fetchQrCode.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchQrCode.fulfilled, (state, action) => {
+        state.loading = false;
+        state.qrCodeUrl = action.payload;
+      })
+      .addCase(fetchQrCode.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
