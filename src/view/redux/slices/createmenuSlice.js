@@ -24,8 +24,8 @@ export const updateMenuItem = createAsyncThunk(
   "createmenu/update",
   async ({ id, formData }, { rejectWithValue, dispatch }) => {
     try {
-      const response = await API.post(
-        `/menu_management/${id}?_method=PUT`,
+      const response = await API.put(
+        `/menu_management/menu_item/${id}`,
         formData,
         {
           headers: {

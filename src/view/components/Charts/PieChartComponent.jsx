@@ -1,5 +1,6 @@
 import React from "react";
-import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { Box } from "@mui/material";
 
 const data = [
   { name: "Total Orders", value: 50, color: "#FF6384" },
@@ -9,23 +10,27 @@ const data = [
 
 const PieChartComponent = () => {
   return (
-    <PieChart width={300} height={300}>
-      <Pie
-        data={data}
-        cx="50%"
-        cy="50%"
-        labelLine={false}
-        outerRadius={80}
-        fill="#8884d8"
-        dataKey="value"
-      >
-        {data.map((entry, index) => (
-          <Cell key={`cell-${index}`} fill={entry.color} />
-        ))}
-      </Pie>
-      <Tooltip />
-      <Legend />
-    </PieChart>
+    <Box sx={{ width: "100%", height: 300 }}>
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            outerRadius={80}
+            fill="#8884d8"
+            dataKey="value"
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.color} />
+            ))}
+          </Pie>
+          <Tooltip />
+          <Legend />
+        </PieChart>
+      </ResponsiveContainer>
+    </Box>
   );
 };
 

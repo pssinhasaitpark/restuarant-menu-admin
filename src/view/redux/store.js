@@ -5,6 +5,7 @@ import customerReducer from './slices/customerDetailsSlice';
 import profileReducer from './slices/profileSlice';
 import createtableReducer from './slices/createtableSlice';
 import createmenuReducer from './slices/createmenuSlice';
+import supportReducer from './slices/supportSlice';
 
 
 const store = configureStore({
@@ -15,6 +16,7 @@ const store = configureStore({
     profile: profileReducer,
     createtable: createtableReducer,
     createmenu: createmenuReducer,
+    support: supportReducer,
   },
 });
 

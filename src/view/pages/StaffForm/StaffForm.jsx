@@ -1,164 +1,178 @@
 import React, { useState } from "react";
 import {
   TextField,
-  MenuItem,
   Button,
   Grid,
-  Typography,
-  Card,
-  CardContent,
+  MenuItem,
+  Select,
   InputLabel,
+  FormControl,
+  FormControlLabel,
+  Checkbox,
+  Typography,
+  Avatar,
+  Stack,
+  Box,
 } from "@mui/material";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 
-const roles = ["Chef", "Waiter", "Manager", "Cashier", "Cleaner"];
+const StaffManagementForm = () => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    gender: "",
+    phoneNumber: "",
+    email: "",
+    address: "",
+    emergencyContact: "",
+    jobTitle: "",
+    department: "",
+    supervisor: "",
+    employmentType: "",
+    availability: "",
+    salary: "",
+    overtimeRate: "",
+    bonusEligibility: false,
+    foodSafetyCert: false,
+    alcoholServiceCert: false,
+    bankAccount: "",
+    status: "active",
+    notes: "",
+    image: null,
+  });
 
-const StaffForm = () => {
-  const [image, setImage] = useState(null);
-
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setImage(URL.createObjectURL(file));
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    if (type === "checkbox") {
+      setFormData((prev) => ({ ...prev, [name]: checked }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
-  const formik = useFormik({
-    initialValues: {
-      name: "",
-      email: "",
-      phone: "",
-      dateOfBirth: "",
-      address: "",
-      role: "",
-    },
-    validationSchema: Yup.object({
-      name: Yup.string().required("Name is required"),
-      email: Yup.string().email("Invalid email").required("Email is required"),
-      phone: Yup.string().matches(/^[0-9]{10}$/, "Must be a valid 10-digit number").required("Phone is required"),
-      dateOfBirth: Yup.string().required("Date of Birth is required"),
-      address: Yup.string().required("Address is required"),
-      role: Yup.string().required("Role is required"),
-    }),
-    onSubmit: (values) => {
-      console.log("Staff Data Submitted:", values);
-      // Handle API call or state update here
-    },
-  });
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({ ...prev, image: URL.createObjectURL(file) }));
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
+  };
 
   return (
-    <Grid container justifyContent="center" style={{ marginTop: "20px" }}>
-      <Card elevation={3} style={{ width: "60%", padding: "20px" }}>
-        <CardContent>
-          <Typography variant="h5" gutterBottom>
-            Add Staff Member
-          </Typography>
-          <form onSubmit={formik.handleSubmit}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Name"
-                  name="name"
-                  value={formik.values.name}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.name && Boolean(formik.errors.name)}
-                  helperText={formik.touched.name && formik.errors.name}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Email"
-                  name="email"
-                  value={formik.values.email}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.email && Boolean(formik.errors.email)}
-                  helperText={formik.touched.email && formik.errors.email}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Phone"
-                  name="phone"
-                  value={formik.values.phone}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.phone && Boolean(formik.errors.phone)}
-                  helperText={formik.touched.phone && formik.errors.phone}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  type="date"
-                  label="Date of Birth"
-                  name="dateOfBirth"
-                  InputLabelProps={{ shrink: true }}
-                  value={formik.values.dateOfBirth}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.dateOfBirth && Boolean(formik.errors.dateOfBirth)}
-                  helperText={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Address"
-                  name="address"
-                  multiline
-                  rows={2}
-                  value={formik.values.address}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.address && Boolean(formik.errors.address)}
-                  helperText={formik.touched.address && formik.errors.address}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  select
-                  fullWidth
-                  label="Role"
-                  name="role"
-                  value={formik.values.role}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.role && Boolean(formik.errors.role)}
-                  helperText={formik.touched.role && formik.errors.role}
-                >
-                  {roles.map((role) => (
-                    <MenuItem key={role} value={role}>
-                      {role}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={12}>
-                <InputLabel>Upload Image</InputLabel>
-                <input type="file" accept="image/*" onChange={handleImageChange} />
-                {image && (
-                  <div style={{ marginTop: "10px" }}>
-                    <img src={image} alt="Staff" width="80" height="80" style={{ borderRadius: "50%" }} />
-                  </div>
-                )}
-              </Grid>
-              <Grid item xs={12} style={{ textAlign: "center", marginTop: "10px" }}>
-                <Button type="submit" variant="contained" color="primary">
-                  Add Staff
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
-        </CardContent>
-      </Card>
-    </Grid>
+    <form onSubmit={handleSubmit} noValidate>
+      <Typography variant="h4" gutterBottom>
+        Staff Management Form
+      </Typography>
+  
+        {/* Image Upload */}
+        <Grid item xs={12} >
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Avatar src={formData.image} sx={{ width: 64, height: 64 }} />
+            <Button variant="contained" component="label">
+              Upload Image
+              <input type="file" hidden accept="image/*" onChange={handleImageChange} />
+            </Button>
+          </Stack>
+        </Grid>
+
+
+        {[
+  [
+    <TextField label="First Name" name="firstName" fullWidth value={formData.firstName} onChange={handleChange} />,
+    <TextField label="Last Name" name="lastName" fullWidth value={formData.lastName} onChange={handleChange} />,
+  ],
+  [
+    <FormControl fullWidth>
+      <InputLabel>Gender</InputLabel>
+      <Select value={formData.gender} name="gender" label="Gender" onChange={handleChange}>
+        <MenuItem value="Male">Male</MenuItem>
+        <MenuItem value="Female">Female</MenuItem>
+        <MenuItem value="Other">Other</MenuItem>
+      </Select>
+    </FormControl>,
+    <TextField label="Phone Number" name="phoneNumber" fullWidth value={formData.phoneNumber} onChange={handleChange} />,
+  ],
+  [
+    <TextField label="Email Address" name="email" fullWidth value={formData.email} onChange={handleChange} />,
+    <TextField label="Address" name="address" fullWidth value={formData.address} onChange={handleChange} />,
+  ],
+  [
+    <TextField label="Emergency Contact" name="emergencyContact" fullWidth value={formData.emergencyContact} onChange={handleChange} />,
+    <FormControl fullWidth>
+      <InputLabel>Job Title</InputLabel>
+      <Select name="jobTitle" value={formData.jobTitle} onChange={handleChange}>
+        <MenuItem value="server">Server</MenuItem>
+        <MenuItem value="chef">Chef</MenuItem>
+        <MenuItem value="manager">Manager</MenuItem>
+        <MenuItem value="bartender">Bartender</MenuItem>
+      </Select>
+    </FormControl>,
+  ],
+  [
+    <FormControl fullWidth>
+      <InputLabel>Department</InputLabel>
+      <Select name="department" value={formData.department} onChange={handleChange}>
+        <MenuItem value="kitchen">Kitchen</MenuItem>
+        <MenuItem value="frontOfHouse">Front of House</MenuItem>
+        <MenuItem value="management">Management</MenuItem>
+      </Select>
+    </FormControl>,
+    <TextField label="Supervisor" name="supervisor" fullWidth value={formData.supervisor} onChange={handleChange} />,
+  ],
+  [
+    <FormControl fullWidth>
+      <InputLabel>Employment Type</InputLabel>
+      <Select name="employmentType" value={formData.employmentType} onChange={handleChange}>
+        <MenuItem value="fullTime">Full-Time</MenuItem>
+        <MenuItem value="partTime">Part-Time</MenuItem>
+        <MenuItem value="temporary">Temporary</MenuItem>
+      </Select>
+    </FormControl>,
+    <TextField label="Availability" name="availability" fullWidth value={formData.availability} onChange={handleChange} />,
+  ],
+  [
+    <TextField label="Salary" name="salary" fullWidth value={formData.salary} onChange={handleChange} />,
+    <TextField label="Overtime Rate" name="overtimeRate" fullWidth value={formData.overtimeRate} onChange={handleChange} />,
+  ],
+  [
+    <FormControlLabel control={<Checkbox checked={formData.bonusEligibility} onChange={handleChange} name="bonusEligibility" />} label="Bonus Eligibility" />,
+    <FormControlLabel control={<Checkbox checked={formData.foodSafetyCert} onChange={handleChange} name="foodSafetyCert" />} label="Food Safety Certificate" />,
+  ],
+  [
+    <FormControlLabel control={<Checkbox checked={formData.alcoholServiceCert} onChange={handleChange} name="alcoholServiceCert" />} label="Alcohol Service Certification" />,
+    <TextField label="Bank Account Number" name="bankAccount" fullWidth value={formData.bankAccount} onChange={handleChange} />,
+  ],
+  [
+    <FormControl fullWidth>
+      <InputLabel>Status</InputLabel>
+      <Select name="status" value={formData.status} onChange={handleChange}>
+        <MenuItem value="active">Active</MenuItem>
+        <MenuItem value="inactive">Inactive</MenuItem>
+      </Select>
+    </FormControl>,
+    <TextField label="Notes" name="notes" fullWidth multiline rows={4} value={formData.notes} onChange={handleChange} />,
+  ],
+].map((row, rowIndex) => (
+  <Grid  key={rowIndex} sx={{ display:"flex"}}>
+    {row.map((field, colIndex) => (
+      <Grid item sx={{width:"50%",padding:"5px"}} key={colIndex}>
+        {field}
+      </Grid>
+    ))}
+  </Grid>
+))}
+
+
+        <Grid item xs={12} display="flex" justifyContent="flex-end">
+          <Button type="submit" variant="contained" color="primary">
+            Save
+          </Button>
+        </Grid>
+    </form>
   );
 };
 
-export default StaffForm;
+export default StaffManagementForm;

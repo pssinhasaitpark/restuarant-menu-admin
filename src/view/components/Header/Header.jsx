@@ -59,7 +59,10 @@ const Header = () => {
         backgroundColor: darkMode ? "#333" : "#e0e0e0",
         color: darkMode ? "#fff" : "#000",
         padding: "10px 20px",
+        boxShadow: darkMode ? "none" : "0px 4px 8px rgba(255, 255, 255, 0.6)",
+        border: darkMode ? "none" : "1px solid rgba(255, 255, 255, 0.6)",
       }}
+      
     >
       <Toolbar
         sx={{

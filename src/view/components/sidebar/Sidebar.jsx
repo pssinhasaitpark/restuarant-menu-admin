@@ -4,6 +4,7 @@ import {
   RestaurantMenu,
   TableChart,
   Group,
+  SupportAgent,
   Logout as LogoutIcon,
   Close as CloseIcon,
 } from "@mui/icons-material";
@@ -40,9 +41,9 @@ const Sidebar = ({ drawerOpen, toggleDrawer }) => {
     { text: "Dashboard", icon: <Dashboard />, path: "/" },
     { text: "Menu", icon: <RestaurantMenu />, path: "/menulist" },
     { text: "Customers Orders", icon: <Group />, path: "/customers" },
-    // { text: "Feedback", icon: <Group />, path: "/review" },
+    { text: "support", icon: <SupportAgent />, path: "/support" },
     // { text: "Customers Review", icon: <Group />, path: "/review" },
-    // { text: "Staff", icon: <Group />, path: "/staffform" },
+    { text: "Staff", icon: <Group />, path: "/staffform" },
     // { text: "salary", icon: <Group />, path: "/customers" },
 
     {
