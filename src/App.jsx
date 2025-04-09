@@ -11,9 +11,10 @@ import RestaurantList from "./view/components/Lists/ResturantsList";
 import RestaurantTableList from "./view/components/Lists/RestaurantTableList";
 import CreatetableForm from "./view/components/Forms/CreateTableForm";
 import Profile from "./view/pages/Profile/Profile"
-import Review from "./view/pages/Review/Review"
+// import Review from "./view/pages/Review/Review"
 import StaffForm from "./view/pages/StaffForm/StaffForm";
 import Menu from "./view/components/Forms/menu";
+import Support from "./view/components/Lists/Support";
 
 function App() {
   return (
@@ -30,7 +31,7 @@ function App() {
         <Route path="/createtable" element={<CreatetableForm />} />
         <Route path="/createlist" element={<RestaurantTableList />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/review" element={<Review />} />
+        <Route path="/support" element={<Support />} />
         <Route path="/staffform" element={<StaffForm />} />
         <Route path="/menu" element={<Menu />} />
       </Route>

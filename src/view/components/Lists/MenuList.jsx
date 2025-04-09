@@ -41,19 +41,19 @@ const RestaurantMenuList = () => {
   const [formLoading, setFormLoading] = useState(false);
 
   useEffect(() => {
-    dispatch(getMenuItems());
-  }, [dispatch]);
+    dispatch(getMenuItems({ page }));
+  }, [dispatch, page]);
 
   useEffect(() => {
     if (success) {
-      dispatch(getMenuItems());
+      dispatch(getMenuItems({ page }));
       dispatch(resetMenuState());
       setEditingMenuItem(null);
       setOpenDialog(false);
       setIsEdit(false);
       setOpenSnackbar(true);
     }
-  }, [success, dispatch]);
+  }, [success, dispatch, page]);
 
   const handleOpenDialog = () => {
     setEditingMenuItem(null);
@@ -75,16 +75,20 @@ const RestaurantMenuList = () => {
   const handleConfirmDelete = async () => {
     if (deleteMenuItemId) {
       await dispatch(deleteMenuItem(deleteMenuItemId));
-      setOpenDeleteDialog(false);
 
       const totalItems = menuItems.reduce(
         (acc, cat) => acc + cat.menu_items.length,
         0
       );
-      const newPageCount = Math.ceil((totalItems - 1) / 12);
-      if (page > newPageCount && newPageCount > 0) {
-        setPage(newPageCount);
-      }
+
+      const newTotal = totalItems - 1;
+      const newPageCount = Math.ceil(newTotal / 12);
+      const updatedPage = page > newPageCount && newPageCount > 0 ? newPageCount : page;
+
+      setPage(updatedPage);
+      dispatch(getMenuItems({ page: updatedPage }));
+
+      setOpenDeleteDialog(false);
     }
   };
 
@@ -95,15 +99,14 @@ const RestaurantMenuList = () => {
     values.items.forEach((item, index) => {
       formData.append(`items[${index}][item_name]`, item.item_name);
       formData.append(`items[${index}][item_price]`, item.item_price);
+      formData.append(`items[${index}][item_description]`, item.item_description);
 
       if (item.images) {
         if (Array.isArray(item.images)) {
-          // For handling FileList objects
           for (let i = 0; i < item.images.length; i++) {
             formData.append("images", item.images[i]);
           }
         } else if (item.images instanceof File) {
-          // For handling single File objects
           formData.append("images", item.images);
         }
       }
@@ -126,21 +129,18 @@ const RestaurantMenuList = () => {
       const payload = result?.payload;
 
       if (payload) {
-        console.log("Fetched Payload:", payload);
-
         const formattedData = {
           id: payload.id,
-          category_name: payload.category_name || "",
+          category_name: payload.category.category_name || "",
           items: [
             {
               item_name: payload.item_name || "",
               item_price: payload.item_price || "",
+              item_description: payload.item_description || "",
               images: payload.images || [],
             },
           ],
         };
-
-        console.log("Formatted Data for Editing:", formattedData);
 
         setEditingMenuItem(formattedData);
       }
@@ -193,7 +193,6 @@ const RestaurantMenuList = () => {
 
   return (
     <Box sx={{ p: 3, textAlign: "center", mt: 4 }}>
-      {/* Top Bar Buttons */}
       <Box
         sx={{
           display: "flex",

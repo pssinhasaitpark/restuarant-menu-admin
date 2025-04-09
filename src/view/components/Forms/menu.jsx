@@ -11,6 +11,7 @@ import { FieldArray, FormikProvider, useFormik } from "formik";
 import * as Yup from "yup";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
+
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 
 const validationSchema = Yup.object({
@@ -25,7 +26,7 @@ const validationSchema = Yup.object({
   ),
 });
 
-const MenuForm = ({ initialValues, onSubmit }) => {
+const MenuForm = ({ initialValues, onSubmit, isEdit }) => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: initialValues || {
@@ -60,6 +61,7 @@ const MenuForm = ({ initialValues, onSubmit }) => {
           helperText={
             formik.touched.category_name && formik.errors.category_name
           }
+          disabled={isEdit}
         />
 
         <FieldArray
@@ -101,28 +103,95 @@ const MenuForm = ({ initialValues, onSubmit }) => {
                       />
                     </Grid>
 
+                    <Grid item xs={12} sm={7}>
+                      <TextField
+                        fullWidth
+                        label="Item Description"
+                        multiline
+                        minRows={3}
+                        {...formik.getFieldProps(
+                          `items[${index}].item_description`
+                        )}
+                        error={
+                          formik.touched.items?.[index]?.item_description &&
+                          Boolean(
+                            formik.errors.items?.[index]?.item_description
+                          )
+                        }
+                        helperText={
+                          formik.touched.items?.[index]?.item_description &&
+                          formik.errors.items?.[index]?.item_description
+                        }
+                      />
+                    </Grid>
+
                     <Grid item xs={12} sm={3}>
+                      <Typography variant="subtitle1" gutterBottom>
+                        Upload Food Image
+                      </Typography>
+
                       <input
                         type="file"
                         accept="image/*"
                         id={`upload-${index}`}
                         style={{ display: "none" }}
-                        onChange={(e) =>
-                          formik.setFieldValue(
-                            `items[${index}].images`,
-                            e.currentTarget.files[0]
-                          )
-                        }
+                        onChange={(e) => {
+                          const file = e.currentTarget.files[0];
+                          if (file) {
+                            formik.setFieldValue(
+                              `items[${index}].images`,
+                              file
+                            );
+                            formik.setFieldValue(
+                              `items[${index}].imagePreview`,
+                              URL.createObjectURL(file)
+                            );
+                          }
+                        }}
                       />
+
                       <label htmlFor={`upload-${index}`}>
                         <IconButton component="span">
                           <PhotoCamera />
                         </IconButton>
                       </label>
-                      {item.images?.name && (
-                        <Typography variant="caption">
-                          {item.images.name}
-                        </Typography>
+
+                      {item.images && (
+                        <Box mt={1} display="flex" alignItems="center" gap={1}>
+                          {item.imagePreview && (
+                            <img
+                              src={item.imagePreview}
+                              alt="Preview"
+                              style={{
+                                width: 60,
+                                height: 60,
+                                borderRadius: 8,
+                                objectFit: "cover",
+                              }}
+                            />
+                          )}
+
+                          <Typography variant="caption">
+                            {item.images.name}
+                          </Typography>
+
+                          <IconButton
+                            onClick={() => {
+                              formik.setFieldValue(
+                                `items[${index}].images`,
+                                null
+                              );
+                              formik.setFieldValue(
+                                `items[${index}].imagePreview`,
+                                ""
+                              );
+                            }}
+                            color="error"
+                            size="small"
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Box>
                       )}
                     </Grid>
                   </Grid>
@@ -137,19 +206,21 @@ const MenuForm = ({ initialValues, onSubmit }) => {
                 </Box>
               ))}
 
-              <Button
-                variant="outlined"
-                startIcon={<AddIcon />}
-                onClick={() =>
-                  arrayHelpers.push({
-                    item_name: "",
-                    item_price: "",
-                    images: null,
-                  })
-                }
-              >
-                Add Item
-              </Button>
+              {!isEdit && (
+                <Button
+                  variant="outlined"
+                  startIcon={<AddIcon />}
+                  onClick={() =>
+                    arrayHelpers.push({
+                      item_name: "",
+                      item_price: "",
+                      images: null,
+                    })
+                  }
+                >
+                  Add Item
+                </Button>
+              )}
             </>
           )}
         />

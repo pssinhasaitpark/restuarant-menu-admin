@@ -8,14 +8,14 @@ import LinearChartComponent from "../../components/Charts/LinearChartComponent";
 
 const Dashboard = () => {
   return (
-    <Box sx={{ p: 3,}}>
+    <Box sx={{ p: 3 }}>
       {/* Page Title */}
       <Typography variant="h4" fontWeight="bold" gutterBottom>
         Dashboard
       </Typography>
 
       {/* Stats Cards */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
+      <Grid container spacing={4} sx={{ mb: 4 }}>
         {[
           {
             title: "Total Orders",
@@ -53,46 +53,51 @@ const Dashboard = () => {
       </Grid>
 
       {/* Charts Section */}
+
       <Grid container spacing={3}>
-        <Grid item xs={6} sx={{ width: "48%" }}>
-          <Paper sx={{ p: 3, boxShadow: 3 }}>
-            <Typography variant="h6" fontWeight="bold" gutterBottom>
-              Pie Chart
-            </Typography>
-            <Box sx={{ display: "flex" }}>
-              <PieChartComponent />
-              <PieChartComponent />
-            </Box>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={6} sx={{ width: "48%" }}>
-          <Paper sx={{ p: 3, boxShadow: 3 }}>
-            <Typography variant="h6" fontWeight="bold" gutterBottom>
-              Total Revenue
-            </Typography>
-            <LinearChartComponent />
-          </Paper>
-        </Grid>
+      
+          <Grid item xs={6} sx={{ width: "48%" }}>
+            <Paper sx={{ p: 3, boxShadow: 3 }}>
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                Pie Chart
+              </Typography>
+              <Box sx={{ display: "flex" }}>
+                <PieChartComponent />
+                <PieChartComponent />
+              </Box>
+            </Paper>
+          </Grid>
+      
+    
+          <Grid item xs={12} md={6} sx={{ width: "48%" }}>
+            <Paper sx={{ p: 3, boxShadow: 3 }}>
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                Total Revenue
+              </Typography>
+              <LinearChartComponent />
+            </Paper>
+          </Grid>
+
       </Grid>
 
       <Grid container spacing={3} sx={{ mt: 3 }}>
-        <Grid item xs={12}>
-          <Paper sx={{ p: 3, boxShadow: 3 }}>
-            <Typography variant="h6" fontWeight="bold" gutterBottom>
+        <Grid item xs={6} sx={{ width: "48%" }}>
+            <Paper sx={{ p: 3, boxShadow: 3 }}>
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
               Customer Map
-            </Typography>
-            <BarChartComponent />
-          </Paper>
-        </Grid>
+              </Typography>
+              <BarChartComponent />
+            </Paper>
+          </Grid>
 
-        <Grid item xs={6} sx={{ width: "50%" }}>
-          <Paper sx={{ p: 3, boxShadow: 3 }}>
-            <Typography variant="h6" fontWeight="bold" gutterBottom>
-              Total Revenue
-            </Typography>
-            <LineChartComponent />
-          </Paper>
-        </Grid>
+        <Grid item xs={12} md={6} sx={{ width: "48%" }}>
+            <Paper sx={{ p: 3, boxShadow: 3 }}>
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                Total Revenue
+              </Typography>
+              <LinearChartComponent />
+            </Paper>
+          </Grid>
       </Grid>
     </Box>
   );

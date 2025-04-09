@@ -19,6 +19,7 @@ const ListComponent = ({
   isRestaurant,
   isTable,
   isMenu,
+  isSupport,
 }) => {
   return (
     <TableContainer component={Paper} sx={{ mt: 3 }}>
@@ -67,7 +68,25 @@ const ListComponent = ({
                   <strong>Item Price</strong>
                 </TableCell>
               </>
-            ) : (
+            ) :  isSupport ? (
+              <>
+                <TableCell>
+                  <strong>Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Email</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Contact_No</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>subject</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>issues</strong>
+                </TableCell>
+              </>
+            ):(
               <>
                 <TableCell>
                   <strong>Customer Name</strong>
@@ -176,7 +195,15 @@ const ListComponent = ({
                     </TableCell>
                     {/* <TableCell>${item.item_price}</TableCell> */}
                   </>
-                ) : (
+                ) : isSupport ? (
+                  <>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.email}</TableCell>
+                    <TableCell>{item.phone_no}</TableCell>
+                    <TableCell>{item.subject}</TableCell>
+                    <TableCell>{item.issues}</TableCell>
+                  </>
+                ) :(
                   <>
                     <TableCell>{item.customer_name}</TableCell>
                     <TableCell>{item.contact_no}</TableCell>

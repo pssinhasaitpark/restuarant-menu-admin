@@ -30,7 +30,7 @@ const RestaurantTableList = () => {
 
  
   const [page, setPage] = useState(1);
-  const itemsPerPage = 4;
+  const itemsPerPage = 3;
 
   useEffect(() => {
     dispatch(fetchTables());
@@ -120,6 +120,7 @@ const RestaurantTableList = () => {
             onEdit={handleEditTable}
             onDelete={handleDeleteTable}
             isTable={true}
+            // searchTerm={searchText}
           />
           <CustomPagination
             page={page}
