@@ -233,14 +233,6 @@ const RestaurantMenuList = () => {
           <Typography variant="h6" color="textSecondary">
             No Items available.
           </Typography>
-          <Button
-            variant="contained"
-            color="success"
-            sx={{ mt: 2 }}
-            onClick={handleOpenDialog}
-          >
-            Add Menu Item
-          </Button>
         </Box>
       ) : (
         <MenuCardList

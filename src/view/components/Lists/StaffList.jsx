@@ -15,19 +15,19 @@ import {
 } from "@mui/material";
 import ListComponent from "../ListComponents/ListComponents";
 import ConfirmationDialog from "../ConfirtmationDialog";
-import CreateTableForm from "../Forms/CreateTableForm";
+import CreateStaffForm from "../../pages/StaffForm/StaffForm";
 import CustomPagination from "../CustomPagination/CustomPagination";
 
 import {
-  fetchTables,
-  createTable,
-  updateTable,
-  deleteTable,
-} from "../../redux/slices/createtableSlice";
+  fetchAllStaff,
+  createStaff,
+  updateStaff,
+  deleteStaff,
+} from "../../redux/slices/staffSlice";
 
-const RestaurantTableList = () => {
+const StaffList = () => {
   const dispatch = useDispatch();
-  const { tables, loading, error } = useSelector((state) => state.createtable);
+  const { staffList, loading, error } = useSelector((state) => state.staff);
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [deleteTableId, setDeleteTableId] = useState(null);
@@ -37,33 +37,31 @@ const RestaurantTableList = () => {
   const [page, setPage] = useState(1);
   const itemsPerPage = 3;
 
-  // search filter
-  const [filterBy, setFilterBy] = useState("table_number");
+  const [filterBy, setFilterBy] = useState("first_name");
   const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
-    dispatch(fetchTables());
+    dispatch(fetchAllStaff());
   }, [dispatch]);
 
-  const filterRestauranttable = tables.filter((item) => {
-    const value = searchValue.toLowerCase();
-
-    if (filterBy === "table_number") {
-      return item.table_number?.toString().toLowerCase().includes(value);
-    }
-
-    if (filterBy === "capacity") {
-      return item.capacity?.toString().toLowerCase().includes(value);
-    }
-
-    return true; // Optional: to handle other filterBy values gracefully
-  });
+  const filterStaffList = Array.isArray(staffList)
+    ? staffList.filter((item) => {
+        const value = searchValue.toLowerCase();
+        if (filterBy === "first_name") {
+          return item.first_name?.toLowerCase().includes(value);
+        }
+        if (filterBy === "designation") {
+          return item.designation?.toLowerCase().includes(value);
+        }
+        return true;
+      })
+    : [];
 
   useEffect(() => {
-    if (page > Math.ceil(tables.length / itemsPerPage)) {
+    if (page > Math.ceil(filterStaffList.length / itemsPerPage)) {
       setPage(1);
     }
-  }, [tables, page, itemsPerPage]);
+  }, [filterStaffList, page, itemsPerPage]);
 
   const handleOpenDialog = () => {
     setEditingTable(null);
@@ -76,11 +74,11 @@ const RestaurantTableList = () => {
 
   const handleSaveTable = async (tableData) => {
     if (editingTable) {
-      await dispatch(updateTable({ id: editingTable.id, tableData }));
+      await dispatch(updateStaff({ id: editingTable.id, tableData }));
     } else {
-      await dispatch(createTable(tableData));
+      await dispatch(createStaff(tableData));
     }
-    dispatch(fetchTables());
+    dispatch(fetchAllStaff());
     handleCloseDialog();
   };
 
@@ -96,9 +94,9 @@ const RestaurantTableList = () => {
 
   const handleConfirmDelete = async () => {
     if (deleteTableId) {
-      await dispatch(deleteTable(deleteTableId));
+      await dispatch(deleteStaff(deleteTableId));
+      dispatch(fetchAllStaff());
       setOpenDeleteDialog(false);
-      dispatch(fetchTables());
     }
   };
 
@@ -112,11 +110,11 @@ const RestaurantTableList = () => {
   };
 
   const startIndex = (page - 1) * itemsPerPage;
-  const paginatedTables = filterRestauranttable.slice(
+  const paginatedTables = filterStaffList.slice(
     startIndex,
     startIndex + itemsPerPage
   );
-  const pageCount = Math.ceil(filterRestauranttable.length / itemsPerPage);
+  const pageCount = Math.ceil(filterStaffList.length / itemsPerPage);
 
   return (
     <Box sx={{ p: 3, textAlign: "center", mt: 2 }}>
@@ -128,27 +126,29 @@ const RestaurantTableList = () => {
         mb={4}
       >
         {/* Filter Section (Left) */}
-        <Grid container spacing={2} >
-          <Grid item xs={12} sm={3}>
-            <FormControl fullWidth>
-              <InputLabel>Filter By</InputLabel>
-              <Select
-                value={filterBy}
-                label="Filter By"
-                onChange={handleFilterChange}
-              >
-                <MenuItem value="table_number">table_number</MenuItem>
-                <MenuItem value="capacity">capacity</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              fullWidth
-              label={`Search by ${filterBy}`}
-              value={searchValue}
-              onChange={handleSearchChange}
-            />
+        <Grid item xs={12} sm={8} md={9} lg={9}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6} md={4}>
+              <FormControl fullWidth>
+                <InputLabel>Filter By</InputLabel>
+                <Select
+                  value={filterBy}
+                  label="Filter By"
+                  onChange={handleFilterChange}
+                >
+                  <MenuItem value="first_name">First Name</MenuItem>
+                  <MenuItem value="designation">Designation</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <TextField
+                fullWidth
+                label={`Search by ${filterBy}`}
+                value={searchValue}
+                onChange={handleSearchChange}
+              />
+            </Grid>
           </Grid>
         </Grid>
 
@@ -166,7 +166,7 @@ const RestaurantTableList = () => {
             color="success"
             onClick={handleOpenDialog}
           >
-            Create Table
+            Add Staff Member
           </Button>
         </Grid>
       </Grid>
@@ -198,8 +198,7 @@ const RestaurantTableList = () => {
             items={paginatedTables}
             onEdit={handleEditTable}
             onDelete={handleDeleteTable}
-            isTable={true}
-            // searchTerm={searchText}
+            isStaff={true}
           />
           <CustomPagination
             page={page}
@@ -209,16 +208,21 @@ const RestaurantTableList = () => {
         </>
       )}
 
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm">
-        <Box sx={{ p: 2 }}>
-          <CreateTableForm
-            onSave={handleSaveTable}
-            onClose={handleCloseDialog}
-          />
-        </Box>
-      </Dialog>
+<Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+  <Box sx={{ p: 2 }}>
+    <CreateStaffForm
+      editingTable={editingTable}
+      onClose={handleCloseDialog}
+      onSave={() => {
+        dispatch(fetchAllStaff());
+        handleCloseDialog();
+      }}
+    />
+  </Box>
+</Dialog>
+
     </Box>
   );
 };
 
-export default RestaurantTableList;
+export default StaffList;

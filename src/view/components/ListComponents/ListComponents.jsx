@@ -20,6 +20,7 @@ const ListComponent = ({
   isTable,
   isMenu,
   isSupport,
+  isStaff,
 }) => {
   return (
     <TableContainer component={Paper} sx={{ mt: 3 }}>
@@ -86,7 +87,38 @@ const ListComponent = ({
                   <strong>issues</strong>
                 </TableCell>
               </>
-            ):(
+            ): isStaff ? (
+              <>
+                <TableCell>
+                  <strong>First Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Last Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>employee Id</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Email</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Contact_No</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Address</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Designation</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Department</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Joining Date</strong>
+                </TableCell>
+              </>
+            ):
+            (
               <>
                 <TableCell>
                   <strong>Customer Name</strong>
@@ -203,7 +235,20 @@ const ListComponent = ({
                     <TableCell>{item.subject}</TableCell>
                     <TableCell>{item.issues}</TableCell>
                   </>
-                ) :(
+                ) : isStaff ? (
+                  <>
+                    <TableCell>{item.first_name}</TableCell>
+                    <TableCell>{item.last_name}</TableCell>
+                    <TableCell>{item.employee_id}</TableCell>
+                    <TableCell>{item.email}</TableCell>
+                    <TableCell>{item.mobile_no}</TableCell>
+                    <TableCell>{item.address}</TableCell>
+                    <TableCell>{item.designation}</TableCell>
+                    <TableCell>{item.department}</TableCell>
+                    <TableCell>{item.joining_date}</TableCell>
+                  </>
+                ) 
+                :(
                   <>
                     <TableCell>{item.customer_name}</TableCell>
                     <TableCell>{item.contact_no}</TableCell>

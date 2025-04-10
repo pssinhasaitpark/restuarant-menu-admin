@@ -7,170 +7,212 @@ import {
   Select,
   InputLabel,
   FormControl,
-  FormControlLabel,
-  Checkbox,
   Typography,
   Avatar,
   Stack,
-  Box,
 } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { createStaff } from "../../redux/slices/staffSlice";
+import { toast } from "react-toastify";
 
 const StaffManagementForm = () => {
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.staff);
+
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    gender: "",
-    phoneNumber: "",
+    first_name: "",
+    last_name: "",
     email: "",
+    gender: "",
+    mobile_no: "",
     address: "",
-    emergencyContact: "",
-    jobTitle: "",
+    designation: "",
     department: "",
-    supervisor: "",
-    employmentType: "",
-    availability: "",
-    salary: "",
-    overtimeRate: "",
-    bonusEligibility: false,
-    foodSafetyCert: false,
-    alcoholServiceCert: false,
-    bankAccount: "",
-    status: "active",
-    notes: "",
-    image: null,
+    employment_type: "",
+    joining_date: "",
+    other_details: "",
+    profile_image: null,
   });
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    if (type === "checkbox") {
-      setFormData((prev) => ({ ...prev, [name]: checked }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setFormData((prev) => ({ ...prev, image: URL.createObjectURL(file) }));
+      setFormData((prev) => ({
+        ...prev,
+        profile_image: URL.createObjectURL(file),
+
+      }));
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+
+    const staffPayload = {
+      ...formData,
+      profile_image: formData.imageFile,
+    };
+
+    const resultAction = await dispatch(createStaff(staffPayload));
+
+    if (createStaff.fulfilled.match(resultAction)) {
+      toast.success("Staff member created successfully!");
+      setFormData({
+        first_name: "",
+        last_name: "",
+        email: "",
+        gender: "",
+        mobile_no: "",
+        address: "",
+        designation: "",
+        department: "",
+        employment_type: "",
+        joining_date: "",
+        other_details: "",
+        profile_image: null,
+        
+      });
+    } else {
+      toast.error(resultAction.payload || "Failed to create staff");
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
+    <form onSubmit={handleSubmit}>
       <Typography variant="h4" gutterBottom>
         Staff Management Form
       </Typography>
-  
-        {/* Image Upload */}
-        <Grid item xs={12} >
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Avatar src={formData.image} sx={{ width: 64, height: 64 }} />
-            <Button variant="contained" component="label">
-              Upload Image
-              <input type="file" hidden accept="image/*" onChange={handleImageChange} />
-            </Button>
-          </Stack>
-        </Grid>
 
-
-        {[
-  [
-    <TextField label="First Name" name="firstName" fullWidth value={formData.firstName} onChange={handleChange} />,
-    <TextField label="Last Name" name="lastName" fullWidth value={formData.lastName} onChange={handleChange} />,
-  ],
-  [
-    <FormControl fullWidth>
-      <InputLabel>Gender</InputLabel>
-      <Select value={formData.gender} name="gender" label="Gender" onChange={handleChange}>
-        <MenuItem value="Male">Male</MenuItem>
-        <MenuItem value="Female">Female</MenuItem>
-        <MenuItem value="Other">Other</MenuItem>
-      </Select>
-    </FormControl>,
-    <TextField label="Phone Number" name="phoneNumber" fullWidth value={formData.phoneNumber} onChange={handleChange} />,
-  ],
-  [
-    <TextField label="Email Address" name="email" fullWidth value={formData.email} onChange={handleChange} />,
-    <TextField label="Address" name="address" fullWidth value={formData.address} onChange={handleChange} />,
-  ],
-  [
-    <TextField label="Emergency Contact" name="emergencyContact" fullWidth value={formData.emergencyContact} onChange={handleChange} />,
-    <FormControl fullWidth>
-      <InputLabel>Job Title</InputLabel>
-      <Select name="jobTitle" value={formData.jobTitle} onChange={handleChange}>
-        <MenuItem value="server">Server</MenuItem>
-        <MenuItem value="chef">Chef</MenuItem>
-        <MenuItem value="manager">Manager</MenuItem>
-        <MenuItem value="bartender">Bartender</MenuItem>
-      </Select>
-    </FormControl>,
-  ],
-  [
-    <FormControl fullWidth>
-      <InputLabel>Department</InputLabel>
-      <Select name="department" value={formData.department} onChange={handleChange}>
-        <MenuItem value="kitchen">Kitchen</MenuItem>
-        <MenuItem value="frontOfHouse">Front of House</MenuItem>
-        <MenuItem value="management">Management</MenuItem>
-      </Select>
-    </FormControl>,
-    <TextField label="Supervisor" name="supervisor" fullWidth value={formData.supervisor} onChange={handleChange} />,
-  ],
-  [
-    <FormControl fullWidth>
-      <InputLabel>Employment Type</InputLabel>
-      <Select name="employmentType" value={formData.employmentType} onChange={handleChange}>
-        <MenuItem value="fullTime">Full-Time</MenuItem>
-        <MenuItem value="partTime">Part-Time</MenuItem>
-        <MenuItem value="temporary">Temporary</MenuItem>
-      </Select>
-    </FormControl>,
-    <TextField label="Availability" name="availability" fullWidth value={formData.availability} onChange={handleChange} />,
-  ],
-  [
-    <TextField label="Salary" name="salary" fullWidth value={formData.salary} onChange={handleChange} />,
-    <TextField label="Overtime Rate" name="overtimeRate" fullWidth value={formData.overtimeRate} onChange={handleChange} />,
-  ],
-  [
-    <FormControlLabel control={<Checkbox checked={formData.bonusEligibility} onChange={handleChange} name="bonusEligibility" />} label="Bonus Eligibility" />,
-    <FormControlLabel control={<Checkbox checked={formData.foodSafetyCert} onChange={handleChange} name="foodSafetyCert" />} label="Food Safety Certificate" />,
-  ],
-  [
-    <FormControlLabel control={<Checkbox checked={formData.alcoholServiceCert} onChange={handleChange} name="alcoholServiceCert" />} label="Alcohol Service Certification" />,
-    <TextField label="Bank Account Number" name="bankAccount" fullWidth value={formData.bankAccount} onChange={handleChange} />,
-  ],
-  [
-    <FormControl fullWidth>
-      <InputLabel>Status</InputLabel>
-      <Select name="status" value={formData.status} onChange={handleChange}>
-        <MenuItem value="active">Active</MenuItem>
-        <MenuItem value="inactive">Inactive</MenuItem>
-      </Select>
-    </FormControl>,
-    <TextField label="Notes" name="notes" fullWidth multiline rows={4} value={formData.notes} onChange={handleChange} />,
-  ],
-].map((row, rowIndex) => (
-  <Grid  key={rowIndex} sx={{ display:"flex"}}>
-    {row.map((field, colIndex) => (
-      <Grid item sx={{width:"50%",padding:"5px"}} key={colIndex}>
-        {field}
-      </Grid>
-    ))}
-  </Grid>
-))}
-
-
-        <Grid item xs={12} display="flex" justifyContent="flex-end">
-          <Button type="submit" variant="contained" color="primary">
-            Save
+      {/* Image Upload */}
+      <Grid item xs={12}>
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Avatar src={formData.profile_image} sx={{ width: 64, height: 64 }} />
+          <Button variant="contained" component="label">
+            Upload Image
+            <input type="file" hidden accept="image/*" onChange={handleImageChange} />
           </Button>
+        </Stack>
+      </Grid>
+
+      {[
+        [
+          <TextField
+            label="First Name"
+            name="first_name"
+            fullWidth
+            value={formData.first_name}
+            onChange={handleChange}
+          />,
+          <TextField
+            label="Last Name"
+            name="last_name"
+            fullWidth
+            value={formData.last_name}
+            onChange={handleChange}
+          />,
+        ],
+        [
+          <TextField
+            label="Email"
+            name="email"
+            fullWidth
+            value={formData.email}
+            onChange={handleChange}
+          />,
+          <TextField
+            label="Mobile Number"
+            name="mobile_no"
+            fullWidth
+            value={formData.mobile_no}
+            onChange={handleChange}
+          />,
+        ],
+        [
+          <FormControl fullWidth>
+            <InputLabel>Gender</InputLabel>
+            <Select name="gender" value={formData.gender} onChange={handleChange} label="Gender">
+              <MenuItem value="male">Male</MenuItem>
+              <MenuItem value="female">Female</MenuItem>
+              <MenuItem value="other">Other</MenuItem>
+            </Select>
+          </FormControl>,
+          <TextField
+            label="Joining Date"
+            name="joining_date"
+            type="date"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            value={formData.joining_date}
+            onChange={handleChange}
+          />,
+        ],
+        [
+          <TextField
+            label="Address"
+            name="address"
+            fullWidth
+            value={formData.address}
+            onChange={handleChange}
+          />,
+          <FormControl fullWidth>
+            <InputLabel>Designation</InputLabel>
+            <Select name="designation" value={formData.designation} onChange={handleChange} label="Designation">
+              <MenuItem value="server">Server</MenuItem>
+              <MenuItem value="chef">Chef</MenuItem>
+              <MenuItem value="manager">Manager</MenuItem>
+              <MenuItem value="bartender">Bartender</MenuItem>
+            </Select>
+          </FormControl>,
+        ],
+        [
+          <FormControl fullWidth>
+            <InputLabel>Department</InputLabel>
+            <Select name="department" value={formData.department} onChange={handleChange} label="department">
+              <MenuItem value="Kitchen">Kitchen</MenuItem>
+              <MenuItem value="Front of House">Front of House</MenuItem>
+              <MenuItem value="Management">Management</MenuItem>
+            </Select>
+          </FormControl>,
+          <FormControl fullWidth>
+            <InputLabel>Employment Type</InputLabel>
+            <Select name="employment_type" value={formData.employment_type} onChange={handleChange} label="employment_type">
+              <MenuItem value="full-time">Full-Time</MenuItem>
+              <MenuItem value="part-time">Part-Time</MenuItem>
+              <MenuItem value="temporary">Temporary</MenuItem>
+            </Select>
+          </FormControl>,
+        ],
+        [
+          <TextField
+            label="Other Details"
+            name="other_details"
+            fullWidth
+            multiline
+            rows={3}
+            value={formData.other_details}
+            onChange={handleChange}
+          />,
+        ],
+      ].map((row, rowIndex) => (
+        <Grid key={rowIndex} sx={{ display: "flex" }}>
+          {row.map((field, colIndex) => (
+            <Grid item sx={{ width: "50%", padding: "5px" }} key={colIndex}>
+              {field}
+            </Grid>
+          ))}
         </Grid>
+      ))}
+
+      <Grid item xs={12} display="flex" justifyContent="flex-end">
+        <Button type="submit" variant="contained" color="primary" disabled={loading}>
+          {loading ? "Saving..." : "Save"}
+        </Button>
+      </Grid>
     </form>
   );
 };

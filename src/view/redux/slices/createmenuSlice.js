@@ -6,7 +6,7 @@ export const createMenuItem = createAsyncThunk(
   "createmenu/create",
   async (formData, { rejectWithValue, dispatch }) => {
     try {
-      const response = await API.post("/menu_management", formData, {
+      const response = await API.post("/menuManagement", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -25,7 +25,7 @@ export const updateMenuItem = createAsyncThunk(
   async ({ id, formData }, { rejectWithValue, dispatch }) => {
     try {
       const response = await API.put(
-        `/menu_management/menu_item/${id}`,
+        `/menuManagement/menuItem/${id}`,
         formData,
         {
           headers: {
@@ -46,7 +46,7 @@ export const deleteMenuItem = createAsyncThunk(
   "createmenu/delete",
   async (id, { rejectWithValue, dispatch }) => {
     try {
-      const response = await API.delete(`/menu_management/menu_item/${id}`);
+      const response = await API.delete(`/menuManagement/menuItem/${id}`);
       dispatch(getMenuItems());
       return { id, message: response.data.message };
     } catch (error) {
@@ -60,7 +60,7 @@ export const getMenuItems = createAsyncThunk(
   "createmenu/getAll",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await API.get("/menu_management");
+      const response = await API.get("/menuManagement");
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Something went wrong");
@@ -72,7 +72,7 @@ export const getMenuItemById = createAsyncThunk(
   "createmenu/getById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await API.get(`/menu_management/${id}`);
+      const response = await API.get(`/menuManagement/${id}`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Something went wrong");
@@ -85,7 +85,7 @@ export const fetchQrCode = createAsyncThunk(
   "createmenu/fetchQrCode",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await API.get("/menu_management/qr_code");
+      const response = await API.get("/menuManagement/qrCode");
       return response.data.data.qr_code_url;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Something went wrong");
