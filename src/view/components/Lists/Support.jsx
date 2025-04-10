@@ -1,10 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Box, Typography, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Typography,
+  CircularProgress,
+  TextField,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+  Grid,
+} from "@mui/material";
 import ListComponent from "../../components/ListComponents/ListComponents";
 import CustomPagination from "../CustomPagination/CustomPagination";
 import ConfirmationDialog from "../ConfirtmationDialog";
-import { fetchSupportQuery, deleteSupportQuery } from "../../redux/slices/supportSlice";
+import {
+  fetchSupportQuery,
+  deleteSupportQuery,
+} from "../../redux/slices/supportSlice";
 
 const Support = () => {
   const dispatch = useDispatch();
@@ -16,15 +29,32 @@ const Support = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
+  // Search Filter States
+  const [filterBy, setFilterBy] = useState("name");
+  const [searchValue, setSearchValue] = useState("");
+
   useEffect(() => {
     dispatch(fetchSupportQuery());
   }, [dispatch]);
 
+  // 🔍 Filter the support data
+  const filteredSupport = support.filter((item) => {
+    const value = searchValue.toLowerCase();
+    if (filterBy === "name") {
+      return item.name?.toLowerCase().includes(value);
+    }
+    if (filterBy === "email") {
+      return item.email?.toLowerCase().includes(value);
+    }
+    return true;
+  });
+
+  // Reset page if filtered results get shorter
   useEffect(() => {
-    if (page > Math.ceil(support.length / itemsPerPage)) {
+    if (page > Math.ceil(filteredSupport.length / itemsPerPage)) {
       setPage(1);
     }
-  }, [support, page, itemsPerPage]);
+  }, [filteredSupport, page, itemsPerPage]);
 
   const handleDeleteClick = (id) => {
     setSelectedId(id);
@@ -34,7 +64,7 @@ const Support = () => {
   const handleDeleteConfirm = () => {
     if (selectedId) {
       dispatch(deleteSupportQuery(selectedId)).then(() => {
-        dispatch(fetchSupportQuery()); // refresh list after deletion
+        dispatch(fetchSupportQuery());
       });
     }
     setOpenDialog(false);
@@ -45,6 +75,19 @@ const Support = () => {
     setOpenDialog(false);
     setSelectedId(null);
   };
+
+  const handleFilterChange = (event) => {
+    setFilterBy(event.target.value);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchValue(event.target.value);
+    setPage(1);
+  };
+
+  const startIndex = (page - 1) * itemsPerPage;
+  const paginatedSupport = filteredSupport.slice(startIndex, startIndex + itemsPerPage);
+  const pageCount = Math.ceil(filteredSupport.length / itemsPerPage);
 
   if (loading) {
     return (
@@ -62,14 +105,39 @@ const Support = () => {
     );
   }
 
-  const startIndex = (page - 1) * itemsPerPage;
-  const paginatedSupport = support.slice(startIndex, startIndex + itemsPerPage);
-  const pageCount = Math.ceil(support.length / itemsPerPage);
-
   return (
     <Box sx={{ p: 3, textAlign: "center", mt: 4 }}>
-      {support.length === 0 ? (
-        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "50vh" }}>
+      {/* 🔍 Filter Controls */}
+      <Grid container spacing={2} mb={4}>
+        <Grid item xs={12} sm={3}>
+          <FormControl fullWidth>
+            <InputLabel>Filter By</InputLabel>
+            <Select value={filterBy} label="Filter By" onChange={handleFilterChange}>
+              <MenuItem value="name">Name</MenuItem>
+              <MenuItem value="email">Email</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <TextField
+            fullWidth
+            label={`Search by ${filterBy}`}
+            value={searchValue}
+            onChange={handleSearchChange}
+          />
+        </Grid>
+      </Grid>
+
+      {filteredSupport.length === 0 ? (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "50vh",
+          }}
+        >
           <Typography variant="h6" color="textSecondary">
             No Query available.
           </Typography>
@@ -89,7 +157,7 @@ const Support = () => {
         </>
       )}
 
-      {/* Confirmation Dialog */}
+      {/* 🗑️ Delete Confirmation Dialog */}
       <ConfirmationDialog
         open={openDialog}
         onClose={handleDialogClose}

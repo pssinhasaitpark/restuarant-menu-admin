@@ -15,6 +15,7 @@ import Profile from "./view/pages/Profile/Profile"
 import StaffForm from "./view/pages/StaffForm/StaffForm";
 import Menu from "./view/components/Forms/menu";
 import Support from "./view/components/Lists/Support";
+import StaffList from "./view/components/Lists/StaffList";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/support" element={<Support />} />
         <Route path="/staffform" element={<StaffForm />} />
+        <Route path="/stafflist" element={<StaffList />} />
         <Route path="/menu" element={<Menu />} />
       </Route>
     </Routes>

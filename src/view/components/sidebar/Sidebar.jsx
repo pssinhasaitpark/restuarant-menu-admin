@@ -43,11 +43,11 @@ const Sidebar = ({ drawerOpen, toggleDrawer }) => {
     { text: "Customers Orders", icon: <Group />, path: "/customers" },
     { text: "support", icon: <SupportAgent />, path: "/support" },
     // { text: "Customers Review", icon: <Group />, path: "/review" },
-    { text: "Staff", icon: <Group />, path: "/staffform" },
-    // { text: "salary", icon: <Group />, path: "/customers" },
+    // { text: "Staff", icon: <Group />, path: "/staffform" },
+     { text: "Staff", icon: <Group />, path: "/stafflist" },
 
     {
-      text: "Restaurant Table List",
+      text: "Restaurant Table",
       icon: <TableChart />,
       path: "/createlist",
     },

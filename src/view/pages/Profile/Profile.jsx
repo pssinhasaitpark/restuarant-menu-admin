@@ -1,181 +1,439 @@
-import React, { useEffect } from "react";
+// import React, { useEffect } from "react";
+// import { useSelector, useDispatch } from "react-redux";
+// import { fetchProfileData } from "../../redux/slices/profileSlice";
+// import {
+//   Card,
+//   CardContent,
+//   Typography,
+//   Avatar,
+//   Box,
+//   CircularProgress,
+//   Paper,
+// } from "@mui/material";
+// import { Email, Person, Phone } from "@mui/icons-material";
+
+// const Profile = () => {
+//   const dispatch = useDispatch();
+//   const { owner_name, restaurant_name, role_type, email, mobile, loading, error } =
+//     useSelector((state) => state.profile);
+
+//   useEffect(() => {
+//     dispatch(fetchProfileData());
+//   }, [dispatch]);
+
+//   // Generate initials from full name
+//   const getInitials = (name) => {
+//     if (!name) return "A";
+//     const nameParts = name.split(" ");
+//     return nameParts.map((part) => part[0].toUpperCase()).join("").slice(0, 2);
+//   };
+
+//   if (loading) {
+//     return (
+//       <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
+//         <CircularProgress />
+//       </Box>
+//     );
+//   }
+
+//   if (error) {
+//     return (
+//       <Box sx={{ textAlign: "center", mt: 5 }}>
+//         <Typography color="error">Error: {error}</Typography>
+//       </Box>
+//     );
+//   }
+
+//   return (
+//     <Box
+//       sx={{
+//         display: "flex",
+//         justifyContent: "center",
+//         alignItems: "center",
+//         minHeight: "80vh",
+
+//         padding: 2,
+//       }}
+//     >
+//       <Card
+//         sx={{
+//           maxWidth: 450,
+//           width: "100%",
+//           p: 3,
+//           textAlign: "center",
+//           boxShadow: 3,
+
+//         }}
+//       >
+//         {/* Avatar with Initials */}
+//         <Avatar
+//           sx={{
+//             width: 100,
+//             height: 100,
+//             margin: "auto",
+//             mb: 2,
+//             fontSize: 32,
+//             fontWeight: "bold",
+//             bgcolor: "#4c2093",
+//             color: "#fff",
+//           }}
+//         >
+//           {getInitials(owner_name)}
+//         </Avatar>
+
+//         <CardContent>
+//           <Box container spacing={2}>
+//             {/* Full Name */}
+//             <Box item xs={12} sx={{ mb: 2 }}>
+//               <Paper
+//                 sx={{
+//                   padding: 2,
+
+//                   display: "flex",
+//                   alignItems: "center",
+//                   gap: 1,
+//                   boxShadow: 1,
+//                 }}
+//               >
+//                 <Person fontSize="small" color="primary" />
+//                 <Typography variant="body1">{owner_name || "Admin"}</Typography>
+//               </Paper>
+//             </Box>
+
+//             {/* Username */}
+//             <Box item xs={12} sx={{ mb: 2 }}>
+//               <Paper
+//                 sx={{
+//                   padding: 2,
+
+//                   display: "flex",
+//                   alignItems: "center",
+//                   gap: 1,
+//                   boxShadow: 1,
+//                 }}
+//               >
+//                 <Person fontSize="small" color="primary" />
+//                 <Typography variant="body1">{restaurant_name || "User "}</Typography>
+//               </Paper>
+//             </Box>
+
+//             {/* User Role */}
+//             <Box item xs={12} sx={{ mb: 2 }}>
+//               <Paper
+//                 sx={{
+//                   padding: 2,
+
+//                   display: "flex",
+//                   alignItems: "center",
+//                   gap: 1,
+//                   boxShadow: 1,
+//                 }}
+//               >
+//                 <Person fontSize="small" color="primary" />
+//                 <Typography variant="body1">{role_type || "admin"}</Typography>
+//               </Paper>
+//             </Box>
+
+//             {/* Email */}
+//             <Box item xs={12} sx={{ mb: 2 }}>
+//               <Paper
+//                 sx={{
+//                   padding: 2,
+
+//                   display: "flex",
+//                   alignItems: "center",
+//                   gap: 1,
+//                   boxShadow: 1,
+//                 }}
+//               >
+//                 <Email fontSize="small" color="primary" />
+//                 <Typography variant="body1">
+//                   {email || "admin@parkhya.net"}
+//                 </Typography>
+//               </Paper>
+//             </Box>
+
+//             {/* Mobile */}
+//             <Box item xs={12} sx={{ mb: 2 }}>
+//               <Paper
+//                 sx={{
+//                   padding: 2,
+
+//                   display: "flex",
+//                   alignItems: "center",
+//                   gap: 1,
+//                   boxShadow: 1,
+//                 }}
+//               >
+//                 <Phone fontSize="small" color="primary" />
+//                 <Typography variant="body1">
+//                   {mobile || "1234567898"}
+//                 </Typography>
+//               </Paper>
+//             </Box>
+//           </Box>
+//         </CardContent>
+//       </Card>
+//     </Box>
+//   );
+// };
+
+// export default Profile;
+
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProfileData } from "../../redux/slices/profileSlice";
 import {
-  Card,
-  CardContent,
+  Box,
   Typography,
   Avatar,
-  Box,
-  CircularProgress,
+  Button,
+  TextField,
   Paper,
+  Grid,
+  Divider,
+  Container,
+  Card,
+  CardContent,
+  CardActions,
+  CircularProgress,
 } from "@mui/material";
-import { Email, Person, Phone } from "@mui/icons-material";
 
-const Profile = () => {
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Cancel";
+
+function Profile() {
   const dispatch = useDispatch();
-  const { owner_name, restaurant_name, role_type, email, mobile, loading, error } =
-    useSelector((state) => state.profile);
+  const {
+    owner_name,
+    restaurant_name,
+    role_type,
+    email,
+    mobile,
+    loading,
+    error,
+  } = useSelector((state) => state.profile);
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    owner_name: "",
+    restaurant_name: "",
+    role_type: "",
+    email: "",
+    mobile: "",
+  });
+
+  // Fetch profile data on mount
   useEffect(() => {
     dispatch(fetchProfileData());
   }, [dispatch]);
 
-  // Generate initials from full name
-  const getInitials = (name) => {
-    if (!name) return "A";
-    const nameParts = name.split(" ");
-    return nameParts.map((part) => part[0].toUpperCase()).join("").slice(0, 2);
+  // Update form data when profile data is loaded
+  useEffect(() => {
+    setFormData({
+      owner_name,
+      restaurant_name,
+      role_type,
+      email,
+      mobile,
+    });
+  }, [owner_name, restaurant_name, role_type, email, mobile]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // You can dispatch an updateProfileData action here
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setFormData({
+      owner_name,
+      restaurant_name,
+      role_type,
+      email,
+      mobile,
+    });
+    setIsEditing(false);
   };
 
   if (loading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
+      <Container maxWidth="sm" sx={{ mt: 10, textAlign: "center" }}>
         <CircularProgress />
-      </Box>
+      </Container>
     );
   }
 
   if (error) {
     return (
-      <Box sx={{ textAlign: "center", mt: 5 }}>
+      <Container maxWidth="sm" sx={{ mt: 10, textAlign: "center" }}>
         <Typography color="error">Error: {error}</Typography>
-      </Box>
+      </Container>
     );
   }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "80vh",
-        
-        padding: 2,
-      }}
-    >
-      <Card
-        sx={{
-          maxWidth: 450,
-          width: "100%",
-          p: 3,
-          textAlign: "center",
-          boxShadow: 3,
-          
-        }}
-      >
-        {/* Avatar with Initials */}
-        <Avatar
-          sx={{
-            width: 100,
-            height: 100,
-            margin: "auto",
-            mb: 2,
-            fontSize: 32,
-            fontWeight: "bold",
-            bgcolor: "#4c2093",
-            color: "#fff",
-          }}
-        >
-          {getInitials(owner_name)}
-        </Avatar>
+    <Container maxWidth="sm" alignItems="center">
+      <Paper elevation={3} sx={{ p: 3, mt: 4 }}>
+        {!isEditing ? (
+          <Card variant="outlined" sx={{ p: 2 }}>
+            <CardContent>
+              <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                <Avatar
+                  src="/api/placeholder/150/150"
+                  alt={formData.owner_name}
+                  sx={{ width: 80, height: 80, mr: 3 }}
+                />
+                <Box>
+                  <Typography variant="h5" component="h1" gutterBottom>
+                    {formData.owner_name}
+                  </Typography>
+                  <Typography variant="body1" color="text.secondary">
+                    {formData.email}
+                  </Typography>
+                </Box>
+              </Box>
 
-        <CardContent>
-          <Box container spacing={2}>
-            {/* Full Name */}
-            <Box item xs={12} sx={{ mb: 2 }}>
-              <Paper
-                sx={{
-                  padding: 2,
-               
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                  boxShadow: 1,
-                }}
+              <Divider sx={{ mb: 3 }} />
+
+              {/* First row with Restaurant Name only */}
+              <Grid item xs={12}>
+                <Box display="flex" alignItems="center">
+                  <Typography variant="h6" sx={{ mr: 1 }}>
+                    Restaurant Name:
+                  </Typography>
+                  <Typography>{formData.restaurant_name}</Typography>
+                </Box>
+              </Grid>
+
+              {/* Second row with Role Type */}
+              <Grid item xs={12}>
+                <Box display="flex" alignItems="center">
+                  <Typography variant="h6" sx={{ mr: 1 }}>
+                    Role Type:
+                  </Typography>
+                  <Typography>{formData.role_type}</Typography>
+                </Box>
+              </Grid>
+
+              {/* Third row with Mobile */}
+              <Grid item xs={12}>
+                <Box display="flex" alignItems="center">
+                  <Typography variant="h6" sx={{ mr: 1 }}>
+                    Mobile:
+                  </Typography>
+                  <Typography>{formData.mobile}</Typography>
+                </Box>
+              </Grid>
+            </CardContent>
+            <CardActions>
+              <Button
+                variant="contained"
+                startIcon={<EditIcon />}
+                onClick={() => setIsEditing(true)}
               >
-                <Person fontSize="small" color="primary" />
-                <Typography variant="body1">{owner_name || "Admin"}</Typography>
-              </Paper>
+                Edit Profile
+              </Button>
+            </CardActions>
+          </Card>
+        ) : (
+          <Box component="form" onSubmit={handleSubmit} noValidate>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+              <Avatar
+                src="/api/placeholder/150/150"
+                alt={formData.owner_name}
+                sx={{ width: 80, height: 80, mr: 3 }}
+              />
+              <Typography variant="body2" color="text.secondary">
+                (Avatar editing not implemented)
+              </Typography>
             </Box>
 
-            {/* Username */}
-            <Box item xs={12} sx={{ mb: 2 }}>
-              <Paper
-                sx={{
-                  padding: 2,
-               
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                  boxShadow: 1,
-                }}
-              >
-                <Person fontSize="small" color="primary" />
-                <Typography variant="body1">{restaurant_name || "User "}</Typography>
-              </Paper>
-            </Box>
+            <Grid container spacing={2} sx={{ mb: 3 }}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  name="owner_name"
+                  label="Owner Name"
+                  fullWidth
+                  value={formData.owner_name}
+                  onChange={handleChange}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  name="restaurant_name"
+                  label="Restaurant Name"
+                  fullWidth
+                  value={formData.restaurant_name}
+                  onChange={handleChange}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  name="role_type"
+                  label="Role Type"
+                  fullWidth
+                  value={formData.role_type}
+                  onChange={handleChange}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  name="email"
+                  label="Email"
+                  type="email"
+                  fullWidth
+                  value={formData.email}
+                  onChange={handleChange}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  name="mobile"
+                  label="Mobile"
+                  fullWidth
+                  value={formData.mobile}
+                  onChange={handleChange}
+                  variant="outlined"
+                />
+              </Grid>
+            </Grid>
 
-            {/* User Role */}
-            <Box item xs={12} sx={{ mb: 2 }}>
-              <Paper
-                sx={{
-                  padding: 2,
-                 
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                  boxShadow: 1,
-                }}
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                startIcon={<SaveIcon />}
               >
-                <Person fontSize="small" color="primary" />
-                <Typography variant="body1">{role_type || "admin"}</Typography>
-              </Paper>
-            </Box>
-
-            {/* Email */}
-            <Box item xs={12} sx={{ mb: 2 }}>
-              <Paper
-                sx={{
-                  padding: 2,
-              
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                  boxShadow: 1,
-                }}
+                Save Changes
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={handleCancel}
+                startIcon={<CancelIcon />}
               >
-                <Email fontSize="small" color="primary" />
-                <Typography variant="body1">
-                  {email || "admin@parkhya.net"}
-                </Typography>
-              </Paper>
-            </Box>
-
-            {/* Mobile */}
-            <Box item xs={12} sx={{ mb: 2 }}>
-              <Paper
-                sx={{
-                  padding: 2,
-       
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                  boxShadow: 1,
-                }}
-              >
-                <Phone fontSize="small" color="primary" />
-                <Typography variant="body1">
-                  {mobile || "1234567898"}
-                </Typography>
-              </Paper>
+                Cancel
+              </Button>
             </Box>
           </Box>
-        </CardContent>
-      </Card>
-    </Box>
+        )}
+      </Paper>
+    </Container>
   );
-};
+}
 
 export default Profile;
