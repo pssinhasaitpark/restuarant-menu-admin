@@ -7,6 +7,10 @@ import {
   SupportAgent,
   Logout as LogoutIcon,
   Close as CloseIcon,
+  Fastfood,
+  Inventory,
+  TableRestaurant,
+  PersonAddAlt,
 } from "@mui/icons-material";
 import {
   Drawer,
@@ -41,16 +45,16 @@ const Sidebar = ({ drawerOpen, toggleDrawer }) => {
     { text: "Dashboard", icon: <Dashboard />, path: "/" },
     { text: "Menu", icon: <RestaurantMenu />, path: "/menulist" },
     { text: "Customers Orders", icon: <Group />, path: "/customers" },
-    { text: "support", icon: <SupportAgent />, path: "/support" },
-    // { text: "Customers Review", icon: <Group />, path: "/review" },
-    // { text: "Staff", icon: <Group />, path: "/staffform" },
-     { text: "Staff", icon: <Group />, path: "/stafflist" },
-
+     { text: "Orders Management", icon: <Fastfood />, path: "/orders" },
+     { text: "Stock Management", icon: <Inventory />, path: "/stock" },
+     { text: "Staff", icon: <PersonAddAlt />, path: "/stafflist" },
     {
       text: "Restaurant Table",
-      icon: <TableChart />,
+      icon: <TableRestaurant />,
       path: "/createlist",
     },
+    { text: "support", icon: <SupportAgent />, path: "/support" },
+
   ];
 
   // Conditionally add the Restaurant Form item based on user role
@@ -70,7 +74,7 @@ const Sidebar = ({ drawerOpen, toggleDrawer }) => {
       icon: <TableChart />,
       path: "/menulist",
     });
-    // menuItems.push({ text: "contact US", icon: <TableChart />, path: "/restaurantform" });
+    menuItems.push({ text: "User", icon: <TableChart />, path: "/user" });
     // menuItems.push({ text: "support System", icon: <TableChart />, path: "/restaurantform" });
   }
 

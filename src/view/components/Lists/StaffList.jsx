@@ -35,7 +35,7 @@ const StaffList = () => {
   const [editingTable, setEditingTable] = useState(null);
 
   const [page, setPage] = useState(1);
-  const itemsPerPage = 3;
+  const itemsPerPage = 7;
 
   const [filterBy, setFilterBy] = useState("first_name");
   const [searchValue, setSearchValue] = useState("");
@@ -82,9 +82,12 @@ const StaffList = () => {
     handleCloseDialog();
   };
 
-  const handleEditTable = (table) => {
-    setEditingTable(table);
-    setOpenDialog(true);
+  const handleEditTable = (id) => {
+    const selectedStaff = staffList.find((staff) => staff.id === id);
+    if (selectedStaff) {
+      setEditingTable(selectedStaff);
+      setOpenDialog(true);
+    }
   };
 
   const handleDeleteTable = (id) => {
@@ -171,12 +174,14 @@ const StaffList = () => {
         </Grid>
       </Grid>
 
+      {/* Delete Confirmation Dialog */}
       <ConfirmationDialog
         open={openDeleteDialog}
         onClose={() => setOpenDeleteDialog(false)}
         onConfirm={handleConfirmDelete}
       />
 
+      {/* List and Pagination */}
       {loading ? (
         <Box
           sx={{
@@ -208,19 +213,16 @@ const StaffList = () => {
         </>
       )}
 
-<Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-  <Box sx={{ p: 2 }}>
-    <CreateStaffForm
-      editingTable={editingTable}
-      onClose={handleCloseDialog}
-      onSave={() => {
-        dispatch(fetchAllStaff());
-        handleCloseDialog();
-      }}
-    />
-  </Box>
-</Dialog>
-
+      {/* Staff Form Dialog */}
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+        <Box sx={{ p: 2 }}>
+          <CreateStaffForm
+            editingTable={editingTable}
+            onClose={handleCloseDialog}
+            onSave={handleSaveTable}
+          />
+        </Box>
+      </Dialog>
     </Box>
   );
 };

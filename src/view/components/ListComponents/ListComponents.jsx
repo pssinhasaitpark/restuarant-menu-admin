@@ -21,6 +21,7 @@ const ListComponent = ({
   isMenu,
   isSupport,
   isStaff,
+  isUser,
 }) => {
   return (
     <TableContainer component={Paper} sx={{ mt: 3 }}>
@@ -69,7 +70,7 @@ const ListComponent = ({
                   <strong>Item Price</strong>
                 </TableCell>
               </>
-            ) :  isSupport ? (
+            ) : isSupport ? (
               <>
                 <TableCell>
                   <strong>Name</strong>
@@ -87,7 +88,7 @@ const ListComponent = ({
                   <strong>issues</strong>
                 </TableCell>
               </>
-            ): isStaff ? (
+            ) : isStaff ? (
               <>
                 <TableCell>
                   <strong>First Name</strong>
@@ -117,8 +118,19 @@ const ListComponent = ({
                   <strong>Joining Date</strong>
                 </TableCell>
               </>
-            ):
-            (
+            ) : isUser ? (
+              <>
+                <TableCell>
+                  <strong>Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Email</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Contact_No</strong>
+                </TableCell>
+              </>
+            ) : (
               <>
                 <TableCell>
                   <strong>Customer Name</strong>
@@ -193,11 +205,10 @@ const ListComponent = ({
                 ) : isMenu ? (
                   <>
                     <TableCell>{item.category_name}</TableCell>
-                    
+
                     {items.length > 0 ? (
                       items.map((item) =>
                         item.menu_items.map((menuItem, index) => (
-
                           <TableRow key={`${item.id}-${index}`}>
                             <TableCell>{menuItem.item_name}</TableCell>
                             {/* <TableCell>${menuItem.item_price}</TableCell> */}
@@ -210,20 +221,20 @@ const ListComponent = ({
                       </TableRow>
                     )}
                     <TableCell>
-                     {items.length > 0 ? (
-                      items.map((item) =>
-                        item.menu_items.map((menuItem, index) => (
-                          <TableRow key={`${item.id}-${index}`}>
-                            {/* <TableCell>{menuItem.item_name}</TableCell> */}
-                            <TableCell>${menuItem.item_price}</TableCell>
-                          </TableRow>
-                        ))
-                      )
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={3}>No items found.</TableCell>
-                      </TableRow>
-                    )}
+                      {items.length > 0 ? (
+                        items.map((item) =>
+                          item.menu_items.map((menuItem, index) => (
+                            <TableRow key={`${item.id}-${index}`}>
+                              {/* <TableCell>{menuItem.item_name}</TableCell> */}
+                              <TableCell>${menuItem.item_price}</TableCell>
+                            </TableRow>
+                          ))
+                        )
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={3}>No items found.</TableCell>
+                        </TableRow>
+                      )}
                     </TableCell>
                     {/* <TableCell>${item.item_price}</TableCell> */}
                   </>
@@ -247,8 +258,13 @@ const ListComponent = ({
                     <TableCell>{item.department}</TableCell>
                     <TableCell>{item.joining_date}</TableCell>
                   </>
-                ) 
-                :(
+                ) : isUser ? (
+                  <>
+                    <TableCell>{item.user_name}</TableCell>
+                    <TableCell>{item.email}</TableCell>
+                    <TableCell>{item.mobile_no}</TableCell>
+                  </>
+                ) : (
                   <>
                     <TableCell>{item.customer_name}</TableCell>
                     <TableCell>{item.contact_no}</TableCell>
@@ -265,15 +281,20 @@ const ListComponent = ({
                   </>
                 )}
                 <TableCell>
-                  <Tooltip title="Edit">
-                    <IconButton
-                      color="success"
-                      onClick={() => onEdit(item.id)}
-                      size="small"
-                    >
-                      <Edit />
-                    </IconButton>
-                  </Tooltip>
+                  {/* Show Edit button only if not isUser and not isSupport */}
+                  {!isUser && !isSupport && (
+                    <Tooltip title="Edit">
+                      <IconButton
+                        color="success"
+                        onClick={() => onEdit(item.id)}
+                        size="small"
+                      >
+                        <Edit />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+
+                  {/* Always show Delete button */}
                   <Tooltip title="Delete">
                     <IconButton
                       color="error"
@@ -303,4 +324,3 @@ const ListComponent = ({
 };
 
 export default ListComponent;
-
