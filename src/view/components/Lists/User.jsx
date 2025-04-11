@@ -15,13 +15,13 @@ import ListComponent from "../../components/ListComponents/ListComponents";
 import CustomPagination from "../CustomPagination/CustomPagination";
 import ConfirmationDialog from "../ConfirtmationDialog";
 import {
-  fetchSupportQuery,
-  deleteSupportQuery,
-} from "../../redux/slices/supportSlice";
+  fetchUser,
+  deleteUser,
+} from "../../redux/slices/userSlice";
 
-const Support = () => {
+const User = () => {
   const dispatch = useDispatch();
-  const { support, loading, error } = useSelector((state) => state.support);
+  const { user, loading, error } = useSelector((state) => state.user);
 
   const [page, setPage] = useState(1);
   const itemsPerPage = 3;
@@ -30,18 +30,18 @@ const Support = () => {
   const [selectedId, setSelectedId] = useState(null);
 
   // Search Filter States
-  const [filterBy, setFilterBy] = useState("name");
+  const [filterBy, setFilterBy] = useState("user_name");
   const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
-    dispatch(fetchSupportQuery());
+    dispatch(fetchUser());
   }, [dispatch]);
 
   //  Filter the support data
-  const filteredSupport = support.filter((item) => {
+  const filteredUser = user.filter((item) => {
     const value = searchValue.toLowerCase();
-    if (filterBy === "name") {
-      return item.name?.toLowerCase().includes(value);
+    if (filterBy === "user_name") {
+      return item.user_name?.toLowerCase().includes(value);
     }
     if (filterBy === "email") {
       return item.email?.toLowerCase().includes(value);
@@ -51,10 +51,10 @@ const Support = () => {
 
   // Reset page if filtered results get shorter
   useEffect(() => {
-    if (page > Math.ceil(filteredSupport.length / itemsPerPage)) {
+    if (page > Math.ceil(filteredUser.length / itemsPerPage)) {
       setPage(1);
     }
-  }, [filteredSupport, page, itemsPerPage]);
+  }, [filteredUser, page, itemsPerPage]);
 
   const handleDeleteClick = (id) => {
     setSelectedId(id);
@@ -63,8 +63,8 @@ const Support = () => {
 
   const handleDeleteConfirm = () => {
     if (selectedId) {
-      dispatch(deleteSupportQuery(selectedId)).then(() => {
-        dispatch(fetchSupportQuery());
+      dispatch(deleteUser(selectedId)).then(() => {
+        dispatch(fetchUser());
       });
     }
     setOpenDialog(false);
@@ -86,8 +86,8 @@ const Support = () => {
   };
 
   const startIndex = (page - 1) * itemsPerPage;
-  const paginatedSupport = filteredSupport.slice(startIndex, startIndex + itemsPerPage);
-  const pageCount = Math.ceil(filteredSupport.length / itemsPerPage);
+  const paginatedUser = filteredUser.slice(startIndex, startIndex + itemsPerPage);
+  const pageCount = Math.ceil(filteredUser.length / itemsPerPage);
 
   if (loading) {
     return (
@@ -113,7 +113,7 @@ const Support = () => {
           <FormControl fullWidth>
             <InputLabel>Filter By</InputLabel>
             <Select value={filterBy} label="Filter By" onChange={handleFilterChange}>
-              <MenuItem value="name">Name</MenuItem>
+              <MenuItem value="user_name">Name</MenuItem>
               <MenuItem value="email">Email</MenuItem>
             </Select>
           </FormControl>
@@ -128,7 +128,7 @@ const Support = () => {
         </Grid>
       </Grid>
 
-      {filteredSupport.length === 0 ? (
+      {filteredUser.length === 0 ? (
         <Box
           sx={{
             display: "flex",
@@ -145,9 +145,10 @@ const Support = () => {
       ) : (
         <>
           <ListComponent
-            items={paginatedSupport}
-            isSupport={true}
+            items={paginatedUser}
+            isUser={true}
             onDelete={handleDeleteClick}
+            
           />
           <CustomPagination
             page={page}
@@ -167,4 +168,4 @@ const Support = () => {
   );
 };
 
-export default Support;
+export default User;

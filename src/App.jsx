@@ -16,6 +16,9 @@ import StaffForm from "./view/pages/StaffForm/StaffForm";
 import Menu from "./view/components/Forms/menu";
 import Support from "./view/components/Lists/Support";
 import StaffList from "./view/components/Lists/StaffList";
+import StockManagement from "./view/components/Lists/StockManagement";
+import OrderManagement from "./view/components/Lists/OrderManagement";
+import User from "./view/components/Lists/User";
 
 function App() {
   return (
@@ -36,6 +39,9 @@ function App() {
         <Route path="/staffform" element={<StaffForm />} />
         <Route path="/stafflist" element={<StaffList />} />
         <Route path="/menu" element={<Menu />} />
+        <Route path="/stock" element={<StockManagement />} />
+        <Route path="/orders" element={<OrderManagement />} />
+        <Route path="/user" element={<User />} />
       </Route>
     </Routes>
   );

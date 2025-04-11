@@ -2,19 +2,24 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import API from "../axios/axios";
 
-export const createStaff = createAsyncThunk("staff/create", async (staffData, { rejectWithValue }) => {
+export const createStaff = createAsyncThunk("staff/create", async (staffData, { rejectWithValue,dispatch }) => {
   try {
+  
+    
     const formData = new FormData();
     for (const key in staffData) {
       if (staffData[key]) {
         formData.append(key, staffData[key]);
       }
     }
+  
     const response = await API.post("/staff", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
+    console.log("response:",response);
+    dispatch(fetchAllStaff())
     return response.data;
   } catch (error) {
     return rejectWithValue(error.response?.data || error.message);
