@@ -25,7 +25,7 @@ const defaultValues = {
   logo: null,
 };
 
-const RestaurantForm = ({ initialValues = defaultValues, onClose, onSave }) => {
+const RestaurantForm = ({ initialValues = defaultValues, onClose }) => {
   const [formValues, setFormValues] = useState(defaultValues);
   const [previewImages, setPreviewImages] = useState([]);
   const [logoPreview, setLogoPreview] = useState(null);
@@ -82,8 +82,6 @@ const RestaurantForm = ({ initialValues = defaultValues, onClose, onSave }) => {
       } else {
         await dispatch(createRestaurant(formData)).unwrap();
       }
-
-      onSave(); 
       onClose(); 
     } catch (err) {
       setError("Something went wrong while submitting the data.");
@@ -106,8 +104,8 @@ const RestaurantForm = ({ initialValues = defaultValues, onClose, onSave }) => {
             { name: "email", label: "Email", type: "email" },
             { name: "password", label: "Password", type: "password" },
             { name: "mobile", label: "Mobile" },
-            { name: "opening_time", label: "Opening Time", type: "time" },
-            { name: "closing_time", label: "Closing Time", type: "time" },
+            { name: "opening_time", label: "Opening Time", },
+            { name: "closing_time", label: "Closing Time", },
             { name: "location", label: "Location" },
           ].map((field, index) => (
             <Grid item xs={12} sm={6} key={index}>

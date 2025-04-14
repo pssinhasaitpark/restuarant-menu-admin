@@ -11,7 +11,7 @@ import RestaurantList from "./view/components/Lists/ResturantsList";
 import RestaurantTableList from "./view/components/Lists/RestaurantTableList";
 import CreatetableForm from "./view/components/Forms/CreateTableForm";
 import Profile from "./view/pages/Profile/Profile"
-// import Review from "./view/pages/Review/Review"
+import Review from "./view/pages/Review/Review"
 import StaffForm from "./view/pages/StaffForm/StaffForm";
 import Menu from "./view/components/Forms/menu";
 import Support from "./view/components/Lists/Support";
@@ -42,6 +42,7 @@ function App() {
         <Route path="/stock" element={<StockManagement />} />
         <Route path="/orders" element={<OrderManagement />} />
         <Route path="/user" element={<User />} />
+        <Route path="/reviews" element={<Review />} />
       </Route>
     </Routes>
   );

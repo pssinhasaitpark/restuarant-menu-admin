@@ -24,7 +24,7 @@ const User = () => {
   const { user, loading, error } = useSelector((state) => state.user);
 
   const [page, setPage] = useState(1);
-  const itemsPerPage = 3;
+  const itemsPerPage = 8;
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedId, setSelectedId] = useState(null);

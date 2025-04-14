@@ -32,7 +32,7 @@ export const fetchTableById = createAsyncThunk(
   "table/fetchById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await API.get(`/table/${id}`);
+      const response = await API.get(`/tables/${id}`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Error occurred");
@@ -45,7 +45,7 @@ export const updateTable = createAsyncThunk(
   "table/update",
   async ({ id, tableData }, { rejectWithValue, dispatch }) => {
     try {
-      const response = await API.put(`/table/${id}`, tableData);
+      const response = await API.put(`/tables/${id}`, tableData);
       dispatch(fetchTables());
       return response.data;
     } catch (error) {

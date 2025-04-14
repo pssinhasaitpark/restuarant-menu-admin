@@ -33,7 +33,7 @@ const RestaurantList = () => {
 
   // Frontend pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 7;
 
   const totalPages = Math.ceil(restaurants.length / itemsPerPage);
   const paginatedData = restaurants.slice(
