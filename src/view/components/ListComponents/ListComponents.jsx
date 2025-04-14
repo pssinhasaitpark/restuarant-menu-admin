@@ -57,6 +57,10 @@ const ListComponent = ({
                 <TableCell>
                   <strong>Capacity</strong>
                 </TableCell>
+                <TableCell>
+                  <strong>status</strong>
+                </TableCell>
+
               </>
             ) : isMenu ? (
               <>
@@ -151,9 +155,6 @@ const ListComponent = ({
                   <strong>Table Number</strong>
                 </TableCell>
                 <TableCell>
-                  <strong>Capacity</strong>
-                </TableCell>
-                <TableCell>
                   <strong>Status</strong>
                 </TableCell>
                 <TableCell>
@@ -201,6 +202,7 @@ const ListComponent = ({
                   <>
                     <TableCell>{item.table_number}</TableCell>
                     <TableCell>{item.capacity}</TableCell>
+                    <TableCell>{item.status}</TableCell>
                   </>
                 ) : isMenu ? (
                   <>
@@ -271,9 +273,9 @@ const ListComponent = ({
                     <TableCell>{item.booking_time}</TableCell>
                     <TableCell>{item.num_of_people}</TableCell>
                     <TableCell>${item.total_charge}</TableCell>
-                    <TableCell>{item.table?.table_number || "N/A"}</TableCell>
-                    <TableCell>{item.table?.capacity || "N/A"}</TableCell>
-                    <TableCell>{item.table?.status || "N/A"}</TableCell>
+                    <TableCell>{item.tables[0]?.table_number || "N/A"}</TableCell>
+                    {/* <TableCell>{item.tables[0]?.capacity || "N/A"}</TableCell> */}
+                    <TableCell>{item.tables[0]?.status || "N/A"}</TableCell>
                     <TableCell>
                       {item.restaurant?.restaurant_name || "N/A"}
                     </TableCell>

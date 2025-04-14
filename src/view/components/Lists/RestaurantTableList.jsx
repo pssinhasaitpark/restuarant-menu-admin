@@ -35,7 +35,7 @@ const RestaurantTableList = () => {
   const [editingTable, setEditingTable] = useState(null);
 
   const [page, setPage] = useState(1);
-  const itemsPerPage = 3;
+  const itemsPerPage = 8;
 
   // search filter
   const [filterBy, setFilterBy] = useState("table_number");

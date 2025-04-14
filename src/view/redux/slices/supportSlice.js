@@ -16,7 +16,7 @@ export const deleteSupportQuery = createAsyncThunk(
   async (id, { rejectWithValue, dispatch }) => {
     try {
       await API.delete(`/support/${id}`);
-      dispatch(fetchSupportQuery()); // Optional: can rely only on reducer update if desired
+      dispatch(fetchSupportQuery());
       return id;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Error occurred');
@@ -39,7 +39,7 @@ const supportquerySlice = createSlice({
       })
       .addCase(fetchSupportQuery.fulfilled, (state, action) => {
         state.loading = false;
-        state.support = action.payload; // ✅ corrected this line
+        state.support = action.payload;
       })
       .addCase(fetchSupportQuery.rejected, (state, action) => {
         state.loading = false;
@@ -51,7 +51,6 @@ const supportquerySlice = createSlice({
       })
       .addCase(deleteSupportQuery.fulfilled, (state, action) => {
         state.loading = false;
-        // Optimistically remove deleted item from local state
         state.support = state.support.filter((item) => item.id !== action.payload);
       })
       .addCase(deleteSupportQuery.rejected, (state, action) => {

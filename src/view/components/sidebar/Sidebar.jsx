@@ -11,6 +11,9 @@ import {
   Inventory,
   TableRestaurant,
   PersonAddAlt,
+  HotelClass,
+  Feedback,
+  SupervisedUserCircle,
 } from "@mui/icons-material";
 import {
   Drawer,
@@ -54,10 +57,10 @@ const Sidebar = ({ drawerOpen, toggleDrawer }) => {
       path: "/createlist",
     },
     { text: "support", icon: <SupportAgent />, path: "/support" },
+    { text: "Rate and reviews", icon: <HotelClass />, path: "/reviews" },
 
   ];
 
-  // Conditionally add the Restaurant Form item based on user role
   if (userType === "super_admin") {
     menuItems.push({
       text: "Restaurants",
@@ -66,7 +69,7 @@ const Sidebar = ({ drawerOpen, toggleDrawer }) => {
     });
     menuItems.push({
       text: "Feedback",
-      icon: <TableChart />,
+      icon: <Feedback />,
       path: "/customers",
     });
     menuItems.push({
@@ -74,8 +77,7 @@ const Sidebar = ({ drawerOpen, toggleDrawer }) => {
       icon: <TableChart />,
       path: "/menulist",
     });
-    menuItems.push({ text: "User", icon: <TableChart />, path: "/user" });
-    // menuItems.push({ text: "support System", icon: <TableChart />, path: "/restaurantform" });
+    menuItems.push({ text: "User", icon: <SupervisedUserCircle />, path: "/user" });
   }
 
   return (
