@@ -8,23 +8,10 @@ import {
   Typography,
 } from "@mui/material";
 import { FieldArray, FormikProvider, useFormik } from "formik";
-import * as Yup from "yup";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-
+import { menuvalidationSchema } from "../ValidationSchema/ValidationSchema";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
-
-const validationSchema = Yup.object({
-  category_name: Yup.string().required("Category name is required"),
-  items: Yup.array().of(
-    Yup.object().shape({
-      item_name: Yup.string().required("Item name is required"),
-      item_price: Yup.number()
-        .typeError("Price must be a number")
-        .required("Item price is required"),
-    })
-  ),
-});
 
 const MenuForm = ({ initialValues, onSubmit, isEdit }) => {
   const formik = useFormik({
@@ -39,7 +26,7 @@ const MenuForm = ({ initialValues, onSubmit, isEdit }) => {
         },
       ],
     },
-    validationSchema,
+    validationSchema: menuvalidationSchema,
     onSubmit,
   });
 

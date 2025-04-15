@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import API from "../axios/axios"; 
 
-
 export const createTable = createAsyncThunk(
   "table/create",
   async (tableData, { rejectWithValue, dispatch }) => {
@@ -22,12 +21,11 @@ export const fetchTables = createAsyncThunk(
       const response = await API.get("/tables");
       return response.data.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Error occurred");
+      return rejectWithValue(error.response?.data ?.message || "Error occurred");
     }
   }
 );
 
-// Async thunk to fetch table by ID
 export const fetchTableById = createAsyncThunk(
   "table/fetchById",
   async (id, { rejectWithValue }) => {
@@ -45,7 +43,7 @@ export const updateTable = createAsyncThunk(
   "table/update",
   async ({ id, tableData }, { rejectWithValue, dispatch }) => {
     try {
-      const response = await API.put(`/tables/${id}`, tableData);
+      const response = await API.put(`/tables/update/${id}`, tableData);
       dispatch(fetchTables());
       return response.data;
     } catch (error) {
@@ -53,7 +51,6 @@ export const updateTable = createAsyncThunk(
     }
   }
 );
-
 
 export const deleteTable = createAsyncThunk(
   "table/delete",

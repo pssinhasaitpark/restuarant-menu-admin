@@ -116,6 +116,7 @@ import { Delete } from "@mui/icons-material";
 
 const FormComponent = ({
   isadd,
+  isAddMore,
   initialValues,
   validationSchemaRestaurant,
   handleSubmit,
@@ -271,7 +272,7 @@ const FormComponent = ({
           ))}
 
           {/* Add New Form Button */}
-          {!isadd && (
+          { !isAddMore && !isadd &&  (
             <Box mt={3} textAlign="center">
               <Button variant="outlined" color="primary" onClick={handleAddForm}>
                 + Add More

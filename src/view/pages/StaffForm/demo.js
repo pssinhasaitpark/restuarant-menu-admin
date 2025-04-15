@@ -1,252 +1,315 @@
 import React, { useEffect, useState } from "react";
 import {
-  Box,
+  TextField,
   Button,
   Grid,
   MenuItem,
-  TextField,
+  Select,
+  InputLabel,
+  FormControl,
   Typography,
+  Avatar,
+  Stack,
+  Box,
+  Dialog,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  createStaff,
-  updateStaff,
-} from "../../redux/slices/staffSlice";
+import { createStaff, updateStaff } from "../../redux/slices/staffSlice";
 import { toast } from "react-toastify";
+import { Formik, Form, Field } from "formik";
+import { staffValidationSchema } from "../../components/ValidationSchema/ValidationSchema";
 
 const StaffManagementForm = ({ editingTable, onClose, onSave }) => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.staff);
 
-  const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-    gender: "",
-    mobile_no: "",
-    address: "",
-    designation: "",
-    department: "",
-    employment_type: "",
-    joining_date: "",
-    other_details: "",
-    profile_image: null, // preview URL
-    imageFile: null, // actual file to send
-  });
+  const [preview, setPreview] = useState("");
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+
+  const initialValues = {
+    first_name: editingTable?.first_name || "",
+    last_name: editingTable?.last_name || "",
+    email: editingTable?.email || "",
+    gender: editingTable?.gender || "",
+    mobile_no: editingTable?.mobile_no || "",
+    address: editingTable?.address || "",
+    designation: editingTable?.designation || "",
+    department: editingTable?.department || "",
+    employment_type: editingTable?.employment_type || "",
+    joining_date: editingTable?.joining_date || "",
+    other_details: editingTable?.other_details || "",
+    profile_image: editingTable?.profile_image || null,
+  };
 
   useEffect(() => {
-    if (editingTable) {
-      setFormData({
-        first_name: editingTable.first_name || "",
-        last_name: editingTable.last_name || "",
-        email: editingTable.email || "",
-        gender: editingTable.gender || "",
-        mobile_no: editingTable.mobile_no || "",
-        address: editingTable.address || "",
-        designation: editingTable.designation || "",
-        department: editingTable.department || "",
-        employment_type: editingTable.employment_type || "",
-        joining_date: editingTable.joining_date || "",
-        other_details: editingTable.other_details || "",
-        profile_image: editingTable.profile_image || null,
-        imageFile: null,
-      });
+    if (initialValues.profile_image) {
+      if (typeof initialValues.profile_image === "string") {
+        setPreview(initialValues.profile_image);
+      }
     }
   }, [editingTable]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleImageChange = (e) => {
+  const handleImageChange = (e, setFieldValue) => {
     const file = e.target.files[0];
     if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        profile_image: URL.createObjectURL(file),
-        imageFile: file,
-      }));
+      setImageFile(file);
+      const objectUrl = URL.createObjectURL(file);
+      setPreview(objectUrl);
+      setFieldValue("profile_image", file);
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const {
-      imageFile,
-      profile_image, // for preview only
-      ...staffData
-    } = formData;
-
-    const payload = {
-      ...staffData,
-      profile_image: imageFile || editingTable?.profile_image,
+  const handleSubmit = async (values) => {
+    const staffPayload = {
+      ...values,
+      profile_image: imageFile || values.profile_image,
     };
 
     const resultAction = editingTable
-      ? await dispatch(updateStaff({ id: editingTable.id, staffData: payload }))
-      : await dispatch(createStaff(payload));
+      ? await dispatch(
+          updateStaff({ id: editingTable.id, staffData: staffPayload })
+        )
+      : await dispatch(createStaff(staffPayload));
 
-    if (
-      (editingTable && updateStaff.fulfilled.match(resultAction)) ||
-      (!editingTable && createStaff.fulfilled.match(resultAction))
-    ) {
-      toast.success(`Staff member ${editingTable ? "updated" : "created"} successfully!`);
+    if (editingTable && updateStaff.fulfilled.match(resultAction)) {
+      toast.success("Staff member updated successfully!");
+      onSave?.();
+      onClose?.();
+    } else if (!editingTable && createStaff.fulfilled.match(resultAction)) {
+      toast.success("Staff member created successfully!");
       onSave?.();
       onClose?.();
     } else {
-      toast.error(resultAction.payload || `Failed to ${editingTable ? "update" : "create"} staff`);
+      toast.error(
+        resultAction.payload ||
+          `Failed to ${editingTable ? "update" : "create"} staff`
+      );
     }
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit}>
-      <Typography variant="h6" gutterBottom>
-        {editingTable ? "Edit Staff Member" : "Add Staff Member"}
-      </Typography>
+    <Formik
+      initialValues={initialValues}
+      enableReinitialize
+      validationSchema={staffValidationSchema}
+      onSubmit={handleSubmit}
+    >
+      {({ values, handleChange, touched, errors, setFieldValue }) => (
+        <Form>
+          <Typography variant="h4" gutterBottom>
+            {editingTable ? "Edit Staff Member" : "Add Staff Member"}
+          </Typography>
 
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <TextField
-            label="First Name"
-            name="first_name"
+          {[
+            [
+              <TextField
+                label="First Name"
+                name="first_name"
+                fullWidth
+                value={values.first_name}
+                onChange={handleChange}
+                error={touched.first_name && !!errors.first_name}
+                helperText={touched.first_name && errors.first_name}
+              />,
+              <TextField
+                label="Last Name"
+                name="last_name"
+                fullWidth
+                value={values.last_name}
+                onChange={handleChange}
+                error={touched.last_name && !!errors.last_name}
+                helperText={touched.last_name && errors.last_name}
+              />,
+            ],
+            [
+              <TextField
+                label="Email"
+                name="email"
+                fullWidth
+                value={values.email}
+                onChange={handleChange}
+                error={touched.email && !!errors.email}
+                helperText={touched.email && errors.email}
+              />,
+              <TextField
+                label="Mobile Number"
+                name="mobile_no"
+                fullWidth
+                value={values.mobile_no}
+                onChange={handleChange}
+                error={touched.mobile_no && !!errors.mobile_no}
+                helperText={touched.mobile_no && errors.mobile_no}
+              />,
+            ],
+            [
+              <FormControl fullWidth error={touched.gender && !!errors.gender}>
+                <InputLabel>Gender</InputLabel>
+                <Select
+                  name="gender"
+                  value={values.gender}
+                  onChange={handleChange}
+                  label="Gender"
+                >
+                  <MenuItem value="male">Male</MenuItem>
+                  <MenuItem value="female">Female</MenuItem>
+                  <MenuItem value="other">Other</MenuItem>
+                </Select>
+              </FormControl>,
+              <TextField
+                label="Joining Date"
+                name="joining_date"
+                type="date"
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+                value={values.joining_date}
+                onChange={handleChange}
+                error={touched.joining_date && !!errors.joining_date}
+                helperText={touched.joining_date && errors.joining_date}
+              />,
+            ],
+            [
+              <TextField
+                label="Address"
+                name="address"
+                fullWidth
+                value={values.address}
+                onChange={handleChange}
+                error={touched.address && !!errors.address}
+                helperText={touched.address && errors.address}
+              />,
+              <FormControl
+                fullWidth
+                error={touched.designation && !!errors.designation}
+              >
+                <InputLabel>Designation</InputLabel>
+                <Select
+                  name="designation"
+                  value={values.designation}
+                  onChange={handleChange}
+                  label="Designation"
+                >
+                  <MenuItem value="server">Server</MenuItem>
+                  <MenuItem value="chef">Chef</MenuItem>
+                  <MenuItem value="manager">Manager</MenuItem>
+                  <MenuItem value="bartender">Bartender</MenuItem>
+                </Select>
+              </FormControl>,
+            ],
+            [
+              <FormControl
+                fullWidth
+                error={touched.department && !!errors.department}
+              >
+                <InputLabel>Department</InputLabel>
+                <Select
+                  name="department"
+                  value={values.department}
+                  onChange={handleChange}
+                  label="Department"
+                >
+                  <MenuItem value="Kitchen">Kitchen</MenuItem>
+                  <MenuItem value="Front of House">Front of House</MenuItem>
+                  <MenuItem value="Management">Management</MenuItem>
+                </Select>
+              </FormControl>,
+              <FormControl
+                fullWidth
+                error={touched.employment_type && !!errors.employment_type}
+              >
+                <InputLabel>Employment Type</InputLabel>
+                <Select
+                  name="employment_type"
+                  value={values.employment_type}
+                  onChange={handleChange}
+                  label="Employment Type"
+                >
+                  <MenuItem value="full-time">Full-Time</MenuItem>
+                  <MenuItem value="part-time">Part-Time</MenuItem>
+                  <MenuItem value="temporary">Temporary</MenuItem>
+                </Select>
+              </FormControl>,
+            ],
+            [
+              <TextField
+                label="Other Details"
+                name="other_details"
+                fullWidth
+                multiline
+                rows={3}
+                value={values.other_details}
+                onChange={handleChange}
+              />,
+            ],
+          ].map((row, rowIndex) => (
+            <Grid key={rowIndex} sx={{ display: "flex" }}>
+              {row.map((field, colIndex) => (
+                <Grid item sx={{ width: "50%", padding: "5px" }} key={colIndex}>
+                  {field}
+                </Grid>
+              ))}
+            </Grid>
+          ))}
+
+          {/* Image Upload */}
+          <Grid item xs={12}>
+            <Stack direction="row" spacing={2} alignItems="center">
+              {preview && (
+                <Avatar
+                  src={preview}
+                  sx={{
+                    width: 64,
+                    height: 64,
+                    cursor: "pointer",
+                    border: "1px solid #ccc",
+                  }}
+                  onClick={() => setImageModalOpen(true)}
+                  alt="Staff"
+                />
+              )}
+              <Button variant="contained" component="label">
+                Upload Image
+                <input
+                  type="file"
+                  hidden
+                  accept="image/*"
+                  onChange={(e) => handleImageChange(e, setFieldValue)}
+                />
+              </Button>
+            </Stack>
+          </Grid>
+
+          <Box display="flex" justifyContent="flex-end" mt={2}>
+            <Button onClick={onClose} sx={{ mr: 1 }}>
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
+            >
+              {editingTable ? "Update" : "Save"}
+            </Button>
+          </Box>
+
+          <Dialog
+            open={imageModalOpen}
+            onClose={() => setImageModalOpen(false)}
+            maxWidth="sm"
             fullWidth
-            value={formData.first_name}
-            onChange={handleChange}
-            required
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Last Name"
-            name="last_name"
-            fullWidth
-            value={formData.last_name}
-            onChange={handleChange}
-            required
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Email"
-            name="email"
-            fullWidth
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Mobile No"
-            name="mobile_no"
-            fullWidth
-            value={formData.mobile_no}
-            onChange={handleChange}
-            required
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Gender"
-            name="gender"
-            select
-            fullWidth
-            value={formData.gender}
-            onChange={handleChange}
           >
-            <MenuItem value="Male">Male</MenuItem>
-            <MenuItem value="Female">Female</MenuItem>
-            <MenuItem value="Other">Other</MenuItem>
-          </TextField>
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Designation"
-            name="designation"
-            fullWidth
-            value={formData.designation}
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Department"
-            name="department"
-            fullWidth
-            value={formData.department}
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Employment Type"
-            name="employment_type"
-            fullWidth
-            value={formData.employment_type}
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Joining Date"
-            name="joining_date"
-            type="date"
-            fullWidth
-            value={formData.joining_date}
-            onChange={handleChange}
-            InputLabelProps={{ shrink: true }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Address"
-            name="address"
-            fullWidth
-            value={formData.address}
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            label="Other Details"
-            name="other_details"
-            multiline
-            rows={3}
-            fullWidth
-            value={formData.other_details}
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <input type="file" accept="image/*" onChange={handleImageChange} />
-          {formData.profile_image && (
-            <Box mt={1}>
+            <Box p={2} display="flex" justifyContent="center">
               <img
-                src={formData.profile_image}
-                alt="Preview"
-                width={100}
-                height={100}
-                style={{ borderRadius: "8px" }}
+                src={preview}
+                alt="Full Preview"
+                style={{ maxWidth: "100%", maxHeight: "80vh" }}
               />
             </Box>
-          )}
-        </Grid>
-      </Grid>
-
-      <Box display="flex" justifyContent="flex-end" mt={2}>
-        <Button onClick={onClose} sx={{ mr: 1 }}>
-          Cancel
-        </Button>
-        <Button type="submit" variant="contained" color="primary" disabled={loading}>
-          {editingTable ? "Update" : "Save"}
-        </Button>
-      </Box>
-    </Box>
+          </Dialog>
+        </Form>
+      )}
+    </Formik>
   );
 };
 

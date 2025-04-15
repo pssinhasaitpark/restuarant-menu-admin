@@ -23,21 +23,24 @@ import {
   createTable,
   updateTable,
   deleteTable,
+  fetchTableById,
 } from "../../redux/slices/createtableSlice";
 
 const RestaurantTableList = () => {
   const dispatch = useDispatch();
-  const { tables, loading, error } = useSelector((state) => state.createtable);
+  const { tables, loading, error, tableDetails } = useSelector(
+    (state) => state.createtable
+  );
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [deleteTableId, setDeleteTableId] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [editingTable, setEditingTable] = useState(null);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const [page, setPage] = useState(1);
   const itemsPerPage = 8;
 
-  // search filter
   const [filterBy, setFilterBy] = useState("table_number");
   const [searchValue, setSearchValue] = useState("");
 
@@ -56,7 +59,7 @@ const RestaurantTableList = () => {
       return item.capacity?.toString().toLowerCase().includes(value);
     }
 
-    return true; // Optional: to handle other filterBy values gracefully
+    return true;
   });
 
   useEffect(() => {
@@ -67,16 +70,19 @@ const RestaurantTableList = () => {
 
   const handleOpenDialog = () => {
     setEditingTable(null);
+    setIsEditMode(false);
     setOpenDialog(true);
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
+    setEditingTable(null);
+    setIsEditMode(false);
   };
 
   const handleSaveTable = async (tableData) => {
-    if (editingTable) {
-      await dispatch(updateTable({ id: editingTable.id, tableData }));
+    if (isEditMode && editingTable) {
+      await dispatch(updateTable({ id: editingTable, tableData }));
     } else {
       await dispatch(createTable(tableData));
     }
@@ -84,8 +90,12 @@ const RestaurantTableList = () => {
     handleCloseDialog();
   };
 
-  const handleEditTable = (table) => {
+  const handleEditTable = async (table) => {
+    console.log("Editing table object:", table);
+    console.log("Editing table with ID:", table.id);
+    await dispatch(fetchTableById(table));
     setEditingTable(table);
+    setIsEditMode(true);
     setOpenDialog(true);
   };
 
@@ -127,8 +137,7 @@ const RestaurantTableList = () => {
         justifyContent="space-between"
         mb={4}
       >
-        {/* Filter Section (Left) */}
-        <Grid container spacing={2} >
+        <Grid container spacing={2}>
           <Grid item xs={12} sm={3}>
             <FormControl fullWidth>
               <InputLabel>Filter By</InputLabel>
@@ -137,8 +146,8 @@ const RestaurantTableList = () => {
                 label="Filter By"
                 onChange={handleFilterChange}
               >
-                <MenuItem value="table_number">table_number</MenuItem>
-                <MenuItem value="capacity">capacity</MenuItem>
+                <MenuItem value="table_number">Table Number</MenuItem>
+                <MenuItem value="capacity">Capacity</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -152,7 +161,6 @@ const RestaurantTableList = () => {
           </Grid>
         </Grid>
 
-        {/* Add Button (Right) */}
         <Grid
           item
           xs={12}
@@ -177,7 +185,7 @@ const RestaurantTableList = () => {
         onConfirm={handleConfirmDelete}
       />
 
-      {loading ? (
+      {loading && !openDialog ? (
         <Box
           sx={{
             display: "flex",
@@ -199,7 +207,6 @@ const RestaurantTableList = () => {
             onEdit={handleEditTable}
             onDelete={handleDeleteTable}
             isTable={true}
-            // searchTerm={searchText}
           />
           <CustomPagination
             page={page}
@@ -209,12 +216,25 @@ const RestaurantTableList = () => {
         </>
       )}
 
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm">
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        maxWidth="sm"
+        fullWidth
+      >
         <Box sx={{ p: 2 }}>
-          <CreateTableForm
-            onSave={handleSaveTable}
-            onClose={handleCloseDialog}
-          />
+          {isEditMode && !tableDetails ? (
+            <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <CreateTableForm
+              onSave={handleSaveTable}
+              onClose={handleCloseDialog}
+              editingTable={isEditMode ? tableDetails : null}
+              isAddMore={isEditMode ? true : false}
+            />
+          )}
         </Box>
       </Dialog>
     </Box>

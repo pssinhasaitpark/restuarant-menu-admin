@@ -26,3 +26,29 @@ export const restaurantValidationSchema = Yup.object({
     .required("Mobile number is required"),
   location: Yup.string().required("Location is required"),
 });
+
+export const staffValidationSchema = Yup.object().shape({
+  first_name: Yup.string().required("First name is required"),
+  last_name: Yup.string().required("Last name is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  mobile_no: Yup.string().required("Mobile number is required"),
+  gender: Yup.string().required("Gender is required"),
+  joining_date: Yup.string().required("Joining date is required"),
+  address: Yup.string().required("Address is required"),
+  designation: Yup.string().required("Designation is required"),
+  department: Yup.string().required("Department is required"),
+  employment_type: Yup.string().required("Employment type is required"),
+});
+
+export  const menuvalidationSchema = Yup.object({
+  category_name: Yup.string().required("Category name is required"),
+  items: Yup.array().of(
+    Yup.object().shape({
+      item_name: Yup.string().required("Item name is required"),
+      item_price: Yup.number()
+        .typeError("Price must be a number")
+        .required("Item price is required"),
+    })
+  ),
+});
+
