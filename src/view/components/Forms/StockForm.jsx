@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Box,
   Button,
@@ -16,23 +16,23 @@ const units = ["kg", "ltr", "pcs"];
 const categories = ["Vegetables", "Meat", "Beverages", "Dairy", "Grains"];
 
 const validationSchema = Yup.object({
-  itemName: Yup.string().required("Item Name is required"),
-  category: Yup.string().required("Category is required"),
+  item_name: Yup.string().required("Item Name is required"),
+  category_name: Yup.string().required("Category is required"),
   quantity: Yup.number().required("Quantity is required"),
   unit: Yup.string().required("Unit is required"),
-  supplier: Yup.string().required("Supplier is required"),
-  purchaseDate: Yup.date().required("Purchase date is required"),
+  supplier_name: Yup.string().required("Supplier is required"),
+  price_per_unit: Yup.number().required("Price per unit is required"),
 });
 
 const StockForm = ({ initialValues, onClose, onSave }) => {
   const formik = useFormik({
     initialValues: initialValues || {
-      itemName: "",
-      category: "",
+      item_name: "",
+      category_name: "",
       quantity: "",
       unit: "",
-      supplier: "",
-      purchaseDate: "",
+      supplier_name: "",
+      price_per_unit: "",
     },
     validationSchema,
     enableReinitialize: true,
@@ -51,23 +51,23 @@ const StockForm = ({ initialValues, onClose, onSave }) => {
               <TextField
                 fullWidth
                 label="Item Name"
-                name="itemName"
-                value={formik.values.itemName}
+                name="item_name"
+                value={formik.values.item_name}
                 onChange={formik.handleChange}
-                error={formik.touched.itemName && Boolean(formik.errors.itemName)}
-                helperText={formik.touched.itemName && formik.errors.itemName}
+                error={formik.touched.item_name && Boolean(formik.errors.item_name)}
+                helperText={formik.touched.item_name && formik.errors.item_name}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 select
-                fullWidth
+                sx={{width:"300px"}}
                 label="Category"
-                name="category"
-                value={formik.values.category}
+                name="category_name"
+                value={formik.values.category_name}
                 onChange={formik.handleChange}
-                error={formik.touched.category && Boolean(formik.errors.category)}
-                helperText={formik.touched.category && formik.errors.category}
+                error={formik.touched.category_name && Boolean(formik.errors.category_name)}
+                helperText={formik.touched.category_name && formik.errors.category_name}
               >
                 {categories.map((option) => (
                   <MenuItem key={option} value={option}>{option}</MenuItem>
@@ -89,7 +89,7 @@ const StockForm = ({ initialValues, onClose, onSave }) => {
             <Grid item xs={6}>
               <TextField
                 select
-                fullWidth
+                sx={{width:"300px"}}
                 label="Unit"
                 name="unit"
                 value={formik.values.unit}
@@ -106,24 +106,24 @@ const StockForm = ({ initialValues, onClose, onSave }) => {
               <TextField
                 fullWidth
                 label="Supplier"
-                name="supplier"
-                value={formik.values.supplier}
+                name="supplier_name"
+                value={formik.values.supplier_name}
                 onChange={formik.handleChange}
-                error={formik.touched.supplier && Boolean(formik.errors.supplier)}
-                helperText={formik.touched.supplier && formik.errors.supplier}
+                error={formik.touched.supplier_name && Boolean(formik.errors.supplier_name)}
+                helperText={formik.touched.supplier_name && formik.errors.supplier_name}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                fullWidth
-                type="date"
-                label="Purchase Date"
-                name="purchaseDate"
-                InputLabelProps={{ shrink: true }}
-                value={formik.values.purchaseDate}
+               
+                label="Price/Unit"
+                sx={{width:"300px"}}
+                name="price_per_unit"
+                type="number"
+                value={formik.values.price_per_unit}
                 onChange={formik.handleChange}
-                error={formik.touched.purchaseDate && Boolean(formik.errors.purchaseDate)}
-                helperText={formik.touched.purchaseDate && formik.errors.purchaseDate}
+                error={formik.touched.price_per_unit && Boolean(formik.errors.price_per_unit)}
+                helperText={formik.touched.price_per_unit && formik.errors.price_per_unit}
               />
             </Grid>
           </Grid>

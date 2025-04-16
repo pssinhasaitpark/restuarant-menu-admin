@@ -18,6 +18,8 @@
     "axios": "^1.8.4",
     "dotenv": "^16.4.7",
     "formik": "^2.4.6",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-redux": "^9.2.0",

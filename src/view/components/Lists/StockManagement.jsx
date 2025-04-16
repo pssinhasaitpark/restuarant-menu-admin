@@ -1,36 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Box, Button, Typography, Dialog } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  Box,
-  Button,
-  Typography,
-  Dialog,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  IconButton,
-} from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+  fetchAllStockItems,
+  createStockItem,
+  updateStockItem,
+  deleteStockItem,
+} from "../../redux/slices/stockSlice";
 import StockForm from "../Forms/StockForm";
+import ListComponent from "../ListComponents/ListComponents";
 
 const StockManagement = () => {
-  const [stockItems, setStockItems] = useState([
-    {
-      id: 1,
-      itemName: "Tomatoes",
-      category: "Vegetables",
-      quantity: 20,
-      unit: "kg",
-      supplier: "Fresh Farm",
-      purchaseDate: "2025-04-01",
-    },
-  ]);
+  const dispatch = useDispatch();
+  const { items: stockItems, loading } = useSelector((state) => state.stock);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+
+  useEffect(() => {
+    dispatch(fetchAllStockItems());
+  }, [dispatch]);
 
   const handleOpenDialog = (item = null) => {
     setEditingItem(item);
@@ -44,61 +33,64 @@ const StockManagement = () => {
 
   const handleSaveItem = (data) => {
     if (editingItem) {
-      setStockItems((prev) =>
-        prev.map((item) => (item.id === editingItem.id ? { ...data, id: item.id } : item))
-      );
+      dispatch(updateStockItem({ id: editingItem.id, data })).then((res) => {
+        if (res.meta.requestStatus === "fulfilled") {
+          dispatch(fetchAllStockItems());
+          handleCloseDialog();
+        }
+      });
     } else {
-      setStockItems((prev) => [...prev, { ...data, id: Date.now() }]);
+      dispatch(createStockItem(data)).then((res) => {
+        if (res.meta.requestStatus === "fulfilled") {
+          dispatch(fetchAllStockItems());
+          handleCloseDialog();
+        }
+      });
     }
-    handleCloseDialog();
   };
 
   const handleDelete = (id) => {
-    setStockItems((prev) => prev.filter((item) => item.id !== id));
+    dispatch(deleteStockItem(id));
   };
 
   return (
     <Box sx={{ p: 4 }}>
-      <Typography variant="h5" mb={3}>
-        Stock Management
-      </Typography>
-      <Button variant="contained" onClick={() => handleOpenDialog()} sx={{ mb: 2 }}>
-        Add Stock Item
-      </Button>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 2,
+          mb: 3,
+          flexWrap: "wrap",
+        }}
+      >
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Typography variant="h5" mb={3}>
+            Stock Management
+          </Typography>
+        </Box>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Item Name</TableCell>
-              <TableCell>Category</TableCell>
-              <TableCell>Quantity</TableCell>
-              <TableCell>Unit</TableCell>
-              <TableCell>Supplier</TableCell>
-              <TableCell>Purchase Date</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {stockItems.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>{item.itemName}</TableCell>
-                <TableCell>{item.category}</TableCell>
-                <TableCell>{item.quantity}</TableCell>
-                <TableCell>{item.unit}</TableCell>
-                <TableCell>{item.supplier}</TableCell>
-                <TableCell>{item.purchaseDate}</TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleOpenDialog(item)}><Edit /></IconButton>
-                  <IconButton onClick={() => handleDelete(item.id)}><Delete /></IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+        <Button variant="contained" color="success" onClick={handleOpenDialog}>
+          Add Stock Item
+        </Button>
+      </Box>
 
-      <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="sm">
+      <ListComponent
+        items={stockItems}
+        onEdit={handleOpenDialog}
+        onDelete={handleDelete}
+        handleOpenDialog={handleOpenDialog}
+        handleDelete={handleDelete}
+        isStock={true}
+      />
+
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        fullWidth
+        maxWidth="sm"
+      >
         <StockForm
           initialValues={editingItem}
           onClose={handleCloseDialog}

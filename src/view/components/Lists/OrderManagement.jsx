@@ -1,25 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Box,
   TextField,
   MenuItem,
   Button,
   Grid,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
   Paper,
   Typography,
   Dialog,
   DialogTitle,
   DialogContent,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
 } from "@mui/material";
-
-import dummyOrders from "../../utils/dummyOrders.json";
+import ListComponent from "../ListComponents/ListComponents";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchOrders } from "../../redux/slices/orderSlice";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const OrderManagement = () => {
+  const dispatch = useDispatch();
+  const invoiceRef = useRef();
+
+  const { orders, loading, error } = useSelector((state) => state.orders);
+  console.log("orders ===", orders);
+
   const [filters, setFilters] = useState({
     orderId: "",
     fromDate: "",
@@ -27,23 +36,31 @@ const OrderManagement = () => {
     orderStatus: "",
   });
 
-  const [filteredOrders, setFilteredOrders] = useState(dummyOrders);
+  const [filteredOrders, setFilteredOrders] = useState(orders);
   const [invoiceDialogOpen, setInvoiceDialogOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
+
+  useEffect(() => {
+    dispatch(fetchOrders());
+  }, [dispatch]);
+
+  useEffect(() => {
+    setFilteredOrders(orders);
+  }, [orders]);
 
   const handleFilterChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
   };
 
   const handleSearch = () => {
-    const filtered = dummyOrders.filter((order) => {
+    const filtered = orders.filter((order) => {
       return (
-        (!filters.orderId || order.orderId.includes(filters.orderId)) &&
-        (!filters.orderStatus || order.orderStatus === filters.orderStatus) &&
+        (!filters.orderId || order.order_id.includes(filters.orderId)) &&
+        (!filters.orderStatus || order.status === filters.orderStatus) &&
         (!filters.fromDate ||
-          new Date(order.orderDate) >= new Date(filters.fromDate)) &&
+          new Date(order.createdAt) >= new Date(filters.fromDate)) &&
         (!filters.toDate ||
-          new Date(order.orderDate) <= new Date(filters.toDate))
+          new Date(order.createdAt) <= new Date(filters.toDate))
       );
     });
     setFilteredOrders(filtered);
@@ -51,7 +68,7 @@ const OrderManagement = () => {
 
   const handleReset = () => {
     setFilters({ orderId: "", fromDate: "", toDate: "", orderStatus: "" });
-    setFilteredOrders(dummyOrders);
+    setFilteredOrders(orders);
   };
 
   const handleGenerateInvoice = (order) => {
@@ -64,16 +81,69 @@ const OrderManagement = () => {
     setSelectedInvoice(null);
   };
 
+  const handlePrint = () => {
+    console.log("Printing invoice...");
+    html2canvas(invoiceRef.current).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.autoPrint(); // Automatically trigger the print dialog
+      window.open(pdf.output("bloburl"), "_blank"); // Open the PDF in a new tab
+    }).catch((error) => {
+      console.error("Error generating PDF:", error);
+    });
+  };
+
   const calculateTotal = (items) =>
     items.reduce((sum, item) => sum + item.quantity * item.price, 0);
 
-  const handlePrint = () => {
-    window.print();
-  };
-
   return (
     <Box p={3}>
-      {/* this is for search */}
+      <style>
+        {`
+          @media print {
+            body {
+              font-family: 'Courier New', Courier, monospace;
+              font-size: 12px;
+              line-height: 1.2;
+            }
+            .dot-matrix {
+              border: 1px solid #000;
+              padding: 10px;
+              width: 100%;
+              max-width: 8.5in; /* Standard width for dot-matrix printers */
+              margin: 0 auto;
+            }
+            .dot-matrix table {
+              width: 100%;
+              border-collapse: collapse;
+            }
+            .dot-matrix th, .dot-matrix td {
+              border: 1px solid #000;
+              padding: 5px;
+              text-align: left;
+            }
+            .dot-matrix th {
+              background-color: #f9f9f9;
+            }
+            .dot-matrix .header, .dot-matrix .footer {
+              text-align: center;
+              margin-bottom: 10px;
+            }
+            .dot-matrix .footer {
+              margin-top: 20px;
+            }
+            .no-print {
+              display: none;
+            }
+          }
+        `}
+      </style>
+
       <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
         <Typography variant="h5" gutterBottom>
           Search Filter
@@ -136,96 +206,21 @@ const OrderManagement = () => {
         </Grid>
       </Paper>
 
-      <Paper>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>S.No</TableCell>
-              <TableCell>Token No.</TableCell>
-              <TableCell>Customer Name</TableCell>
-              <TableCell>Order ID</TableCell>
-              <TableCell>Order Date</TableCell>
-              <TableCell>Item Name</TableCell>
-              <TableCell>Qty</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Subtotal</TableCell>
-              <TableCell>Total</TableCell>
-              <TableCell>Payment</TableCell>
-              <TableCell>Invoice</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredOrders.map((order, orderIndex) => {
-              const totalAmount = calculateTotal(order.items);
-              return order.items.map((item, itemIndex) => (
-                <TableRow key={`${order.id}-${itemIndex}`}>
-                  {itemIndex === 0 && (
-                    <>
-                      <TableCell rowSpan={order.items.length}>
-                        {orderIndex + 1}
-                      </TableCell>
-                      <TableCell rowSpan={order.items.length}>
-                        {order.tokenNumber}
-                      </TableCell>
-                      <TableCell rowSpan={order.items.length}>
-                        {order.customerName}
-                      </TableCell>
-                      <TableCell rowSpan={order.items.length}>
-                        {order.orderId}
-                      </TableCell>
-                      <TableCell rowSpan={order.items.length}>
-                        {order.orderDate}
-                      </TableCell>
-                    </>
-                  )}
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell>{item.quantity}</TableCell>
-                  <TableCell>₹{item.price.toFixed(2)}</TableCell>
-                  <TableCell>
-                    ₹{(item.quantity * item.price).toFixed(2)}
-                  </TableCell>
-                  {itemIndex === 0 && (
-                    <>
-                      <TableCell rowSpan={order.items.length}>
-                        ₹{totalAmount.toFixed(2)}
-                      </TableCell>
-                      <TableCell rowSpan={order.items.length}>
-                        {order.paymentStatus}
-                      </TableCell>
-                      <TableCell rowSpan={order.items.length}>
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          onClick={() => handleGenerateInvoice(order)}
-                        >
-                          Generate
-                        </Button>
-                      </TableCell>
-                      <TableCell rowSpan={order.items.length}>
-                        <Button size="small">Track</Button>
-                      </TableCell>
-                    </>
-                  )}
-                </TableRow>
-              ));
-            })}
-          </TableBody>
-        </Table>
-        {filteredOrders.length === 0 && (
-          <Typography variant="body2" p={2}>
-            No orders found.
-          </Typography>
-        )}
-      </Paper>
+      <ListComponent
+        items={filteredOrders}
+        onEdit={handleGenerateInvoice}
+        onDelete={() => {}}
+        isOrder={true} // Ensure it's marked as orders
+      />
 
+      {/* Invoice Dialog */}
       <Dialog open={invoiceDialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Invoice</DialogTitle>
         <DialogContent>
           {selectedInvoice && (
-            <Box>
+            <Box ref={invoiceRef} className="dot-matrix">
               {/* Header */}
-              <Box textAlign="center" mb={2}>
+              <Box className="header" mb={2}>
                 <Typography variant="h6" fontWeight="bold">
                   🍽️ Foodie's Delight Restaurant
                 </Typography>
@@ -242,18 +237,18 @@ const OrderManagement = () => {
                 <Grid container spacing={1}>
                   <Grid item xs={6}>
                     <Typography variant="body2">
-                      <strong>Order ID:</strong> {selectedInvoice.orderId}
+                      <strong>Order ID:</strong> {selectedInvoice.order_id}
                     </Typography>
                     <Typography variant="body2">
-                      <strong>Token No:</strong> {selectedInvoice.tokenNumber}
+                      <strong>Token No:</strong> {selectedInvoice.token_number}
                     </Typography>
                   </Grid>
                   <Grid item xs={6}>
                     <Typography variant="body2" textAlign="right">
-                      <strong>Order Date:</strong> {selectedInvoice.orderDate}
+                      <strong>Order Date:</strong> {selectedInvoice.createdAt}
                     </Typography>
                     <Typography variant="body2" textAlign="right">
-                      <strong>Customer:</strong> {selectedInvoice.customerName}
+                      <strong>Customer:</strong> {selectedInvoice.customer_name}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -327,10 +322,10 @@ const OrderManagement = () => {
               </Box>
 
               {/* Footer */}
-              <Box textAlign="center" mt={3}>
+              <Box className="footer" mt={3}>
                 <Typography variant="body2">
                   Payment Status:{" "}
-                  <strong>{selectedInvoice.paymentStatus}</strong>
+                  <strong>{selectedInvoice.payment_status}</strong>
                 </Typography>
                 <Typography variant="body2" mt={1}>
                   Thank you for dining with us! 🙏
@@ -338,13 +333,8 @@ const OrderManagement = () => {
               </Box>
 
               {/* Print Button */}
-              <Box textAlign="center" mt={2}>
+              <Box textAlign="center" mt={2} className="no-print">
                 <Button
-                  sx={{
-                    "@media print": {
-                      display: "none",
-                    },
-                  }}
                   variant="contained"
                   color="primary"
                   onClick={handlePrint}
