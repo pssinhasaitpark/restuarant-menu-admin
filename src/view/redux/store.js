@@ -9,6 +9,8 @@ import supportReducer from './slices/supportSlice';
 import staffReducer from './slices/staffSlice';
 import userReducer from './slices/userSlice';
 import reviewReducer from './slices/reviewSlice';
+import ordersReducer from './slices/orderSlice';
+import stockReducer from './slices/stockSlice';
 
 
 const store = configureStore({
@@ -23,6 +25,8 @@ const store = configureStore({
     staff: staffReducer,
     user: userReducer,
     reviews : reviewReducer,
+    orders : ordersReducer,
+    stock: stockReducer,
   },
 });
 
