@@ -45,8 +45,7 @@ const Header = () => {
     handleMenuClose();
   };
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    sessionStorage.removeItem("token");
+    localStorage.removeItem("authToken");
     navigate("/login");
     handleMenuClose();
   };
@@ -116,7 +115,7 @@ const Header = () => {
           onClose={handleMenuClose}
         >
           <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
-          {/* <MenuItem onClick={handleLogout}>Logout</MenuItem> */}
+          <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>

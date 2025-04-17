@@ -8,8 +8,6 @@ export const loginUser  = createAsyncThunk(
     try {
       const response = await API.post("/restaurant/login", credentials);
       const { encryptedToken, role_type } = response.data.data;
-console.log("responceeee",response)
-      // Store token and user type in localStorage
       localStorage.setItem("authToken", encryptedToken);
       localStorage.setItem("userType", role_type);
 

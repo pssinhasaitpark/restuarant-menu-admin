@@ -18,7 +18,6 @@ export const createStaff = createAsyncThunk("staff/create", async (staffData, { 
         "Content-Type": "multipart/form-data",
       },
     });
-    // console.log("response:",response);
     dispatch(fetchAllStaff())
     return response.data;
   } catch (error) {

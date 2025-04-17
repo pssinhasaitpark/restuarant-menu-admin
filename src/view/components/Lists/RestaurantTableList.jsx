@@ -91,8 +91,6 @@ const RestaurantTableList = () => {
   };
 
   const handleEditTable = async (table) => {
-    console.log("Editing table object:", table);
-    console.log("Editing table with ID:", table.id);
     await dispatch(fetchTableById(table));
     setEditingTable(table);
     setIsEditMode(true);
@@ -196,11 +194,7 @@ const RestaurantTableList = () => {
         >
           <CircularProgress />
         </Box>
-      ) : error ? (
-        <Typography variant="h6" color="error">
-          {error}
-        </Typography>
-      ) : (
+      ) :  (
         <>
           <ListComponent
             items={paginatedTables}

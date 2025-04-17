@@ -51,13 +51,14 @@ const Sidebar = ({ drawerOpen, toggleDrawer }) => {
      { text: "Orders Management", icon: <Fastfood />, path: "/orders" },
      { text: "Stock Management", icon: <Inventory />, path: "/stock" },
      { text: "Staff", icon: <PersonAddAlt />, path: "/stafflist" },
+    //  { text: "Salary Management", icon: <PersonAddAlt />, path: "/salarylist" },
     {
       text: "Restaurant Table",
       icon: <TableRestaurant />,
       path: "/createlist",
     },
     { text: "support", icon: <SupportAgent />, path: "/support" },
-    { text: "Rate and reviews", icon: <HotelClass />, path: "/reviews" },
+    { text: "Customer Experience", icon: <HotelClass />, path: "/reviews" },
 
   ];
 
@@ -155,7 +156,7 @@ const Sidebar = ({ drawerOpen, toggleDrawer }) => {
       <Divider sx={{ mt: "auto" }} />
 
       {/* Logout Button */}
-      <Box sx={{ textAlign: "center", p: 2 }}>
+      {/* <Box sx={{ textAlign: "center", p: 2 }}>
         <Button
           variant="contained"
           color="error"
@@ -165,7 +166,7 @@ const Sidebar = ({ drawerOpen, toggleDrawer }) => {
         >
           Logout
         </Button>
-      </Box>
+      </Box> */}
     </Drawer>
   );
 };

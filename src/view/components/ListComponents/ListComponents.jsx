@@ -12,6 +12,7 @@ import {
   Button,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const ListComponent = ({
   items,
@@ -27,7 +28,14 @@ const ListComponent = ({
   isUser,
   isOrder,
   isStock,
+  noDataMessage,
 }) => {
+  const navigate = useNavigate();
+
+  const handleManageSalary = (id) => {
+    navigate(`/salarylist?id=${id}`);
+  };
+
   return (
     <TableContainer component={Paper} sx={{ mt: 3 }}>
       <Table>
@@ -35,90 +43,206 @@ const ListComponent = ({
           <TableRow>
             {isRestaurant ? (
               <>
-                <TableCell><strong>Image</strong></TableCell>
-                <TableCell><strong>Restaurant Name</strong></TableCell>
-                <TableCell><strong>Owner Name</strong></TableCell>
-                <TableCell><strong>Email</strong></TableCell>
-                <TableCell><strong>Mobile</strong></TableCell>
-                <TableCell><strong>Location</strong></TableCell>
+                <TableCell>
+                  <strong>Image</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Restaurant Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Owner Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Email</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Mobile</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Location</strong>
+                </TableCell>
               </>
             ) : isTable ? (
               <>
-                <TableCell><strong>Table Number</strong></TableCell>
-                <TableCell><strong>Capacity</strong></TableCell>
-                <TableCell><strong>Status</strong></TableCell>
+                <TableCell>
+                  <strong>Table Number</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Capacity</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Status</strong>
+                </TableCell>
               </>
             ) : isMenu ? (
               <>
-                <TableCell><strong>Category Name</strong></TableCell>
-                <TableCell><strong>Item Name</strong></TableCell>
-                <TableCell><strong>Item Price</strong></TableCell>
+                <TableCell>
+                  <strong>Category Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Item Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Item Price</strong>
+                </TableCell>
               </>
             ) : isSupport ? (
               <>
-                <TableCell><strong>Name</strong></TableCell>
-                <TableCell><strong>Email</strong></TableCell>
-                <TableCell><strong>Contact No</strong></TableCell>
-                <TableCell><strong>Subject</strong></TableCell>
-                <TableCell><strong>Issues</strong></TableCell>
+                <TableCell>
+                  <strong>Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Email</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Contact No</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Subject</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Issues</strong>
+                </TableCell>
               </>
             ) : isStaff ? (
               <>
-                <TableCell><strong>First Name</strong></TableCell>
-                <TableCell><strong>Last Name</strong></TableCell>
-                <TableCell><strong>Employee Id</strong></TableCell>
-                <TableCell><strong>Email</strong></TableCell>
-                <TableCell><strong>Contact No</strong></TableCell>
-                <TableCell><strong>Address</strong></TableCell>
-                <TableCell><strong>Designation</strong></TableCell>
-                <TableCell><strong>Department</strong></TableCell>
-                <TableCell><strong>Joining Date</strong></TableCell>
+                <TableCell>
+                  <strong>First Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Last Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Employee Id</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Email</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Contact No</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Address</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Designation</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Department</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Joining Date</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Salary</strong>
+                </TableCell>
               </>
             ) : isUser ? (
               <>
-                <TableCell><strong>Name</strong></TableCell>
-                <TableCell><strong>Email</strong></TableCell>
-                <TableCell><strong>Contact No</strong></TableCell>
+                <TableCell>
+                  <strong>Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Email</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Contact No</strong>
+                </TableCell>
               </>
             ) : isOrder ? (
               <>
-                <TableCell><strong>S.No</strong></TableCell>
-                <TableCell><strong>Token No.</strong></TableCell>
-                <TableCell><strong>Customer Name</strong></TableCell>
-                <TableCell><strong>Order Date</strong></TableCell>
-                <TableCell><strong>Item Name</strong></TableCell>
-                <TableCell><strong>Qty</strong></TableCell>
-                <TableCell><strong>Price</strong></TableCell>
-                <TableCell><strong>Subtotal</strong></TableCell>
-                <TableCell><strong>Total</strong></TableCell>
-                <TableCell><strong>Payment</strong></TableCell>
-                <TableCell><strong>Invoice</strong></TableCell>
-                <TableCell><strong>Track</strong></TableCell>
+                <TableCell>
+                  <strong>S.No</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Token No.</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Customer Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Order Date</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Item Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Qty</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Price</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Subtotal</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Total</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Payment</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Invoice</strong>
+                </TableCell>
               </>
             ) : isStock ? (
               <>
-                <TableCell><strong>Item Name</strong></TableCell>
-                <TableCell><strong>Category</strong></TableCell>
-                <TableCell><strong>Quantity</strong></TableCell>
-                <TableCell><strong>Unit</strong></TableCell>
-                <TableCell><strong>Supplier</strong></TableCell>
-                <TableCell><strong>Price per Unit</strong></TableCell>
-                <TableCell><strong>Total Amount</strong></TableCell>
+                <TableCell>
+                  <strong>Item Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Category</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Quantity</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Unit</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Supplier</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Price per Unit</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Total Amount</strong>
+                </TableCell>
               </>
             ) : (
               <>
-                <TableCell><strong>Customer Name</strong></TableCell>
-                <TableCell><strong>Contact No</strong></TableCell>
-                <TableCell><strong>Booking Time</strong></TableCell>
-                <TableCell><strong>Number of People</strong></TableCell>
-                <TableCell><strong>Total Charge</strong></TableCell>
-                <TableCell><strong>Table Number</strong></TableCell>
-                <TableCell><strong>Status</strong></TableCell>
-                <TableCell><strong>Restaurant Name</strong></TableCell>
-                <TableCell><strong>Location</strong></TableCell>
+                <TableCell>
+                  <strong>Customer Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Contact No</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Booking Time</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Number of People</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Total Charge</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Table Number</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Status</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Restaurant Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Location</strong>
+                </TableCell>
               </>
             )}
-            <TableCell><strong>Actions</strong></TableCell>
+            <TableCell>
+              <strong>Actions</strong>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -196,13 +320,10 @@ const ListComponent = ({
                             <Button
                               size="small"
                               variant="outlined"
-                              onClick={() => onEdit(item)} // Call the onEdit function here
+                              onClick={() => onEdit(item)} 
                             >
                               Generate
                             </Button>
-                          </TableCell>
-                          <TableCell rowSpan={item.items.length}>
-                            <Button size="small">Track</Button>
                           </TableCell>
                         </>
                       )}
@@ -231,7 +352,8 @@ const ListComponent = ({
                     {isRestaurant ? (
                       <>
                         <TableCell>
-                          {Array.isArray(item.images) && item.images.length > 0 ? (
+                          {Array.isArray(item.images) &&
+                          item.images.length > 0 ? (
                             <img
                               src={item.images[0]}
                               alt={item.restaurant_name || "Restaurant Image"}
@@ -277,6 +399,21 @@ const ListComponent = ({
                         <TableCell>{item.designation}</TableCell>
                         <TableCell>{item.department}</TableCell>
                         <TableCell>{item.joining_date}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant="outlined" 
+                            sx={{
+                              borderColor: "#4caf50", 
+                              color: "#4caf50", 
+                              "&:hover": {
+                                backgroundColor: "rgba(76, 175, 80, 0.1)",
+                              },
+                            }}
+                            onClick={() => handleManageSalary(item.id)}
+                          >
+                            Manage Salary
+                          </Button>
+                        </TableCell>
                       </>
                     ) : isUser ? (
                       <>
@@ -291,10 +428,16 @@ const ListComponent = ({
                         <TableCell>{item.booking_time}</TableCell>
                         <TableCell>{item.num_of_people}</TableCell>
                         <TableCell>${item.total_charge}</TableCell>
-                        <TableCell>{item.tables[0]?.table_number || "N/A"}</TableCell>
+                        <TableCell>
+                          {item.tables[0]?.table_number || "N/A"}
+                        </TableCell>
                         <TableCell>{item.tables[0]?.status || "N/A"}</TableCell>
-                        <TableCell>{item.restaurant?.restaurant_name || "N/A"}</TableCell>
-                        <TableCell>{item.restaurant?.location || "N/A"}</TableCell>
+                        <TableCell>
+                          {item.restaurant?.restaurant_name || "N/A"}
+                        </TableCell>
+                        <TableCell>
+                          {item.restaurant?.location || "N/A"}
+                        </TableCell>
                       </>
                     )}
                     <TableCell>
@@ -347,7 +490,7 @@ const ListComponent = ({
                 }
                 align="center"
               >
-                No items available.
+                {noDataMessage || "No items available."}
               </TableCell>
             </TableRow>
           )}

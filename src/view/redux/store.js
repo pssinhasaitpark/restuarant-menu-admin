@@ -11,6 +11,7 @@ import userReducer from './slices/userSlice';
 import reviewReducer from './slices/reviewSlice';
 import ordersReducer from './slices/orderSlice';
 import stockReducer from './slices/stockSlice';
+import salaryReducer from './slices/salarySlice';
 
 
 const store = configureStore({
@@ -27,6 +28,7 @@ const store = configureStore({
     reviews : reviewReducer,
     orders : ordersReducer,
     stock: stockReducer,
+    salary: salaryReducer,
   },
 });
 
