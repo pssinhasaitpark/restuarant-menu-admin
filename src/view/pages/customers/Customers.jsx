@@ -28,7 +28,7 @@ const CustomerList = () => {
   useEffect(() => {
     dispatch(fetchCustomers());
   }, [dispatch]);
-  
+
   const filteredCustomers = customers.filter((item) => {
     const value = searchValue.toLowerCase();
     if (filterBy === "customer_name") {
@@ -40,8 +40,6 @@ const CustomerList = () => {
     return true;
   });
 
-
-
   useEffect(() => {
     if (page > Math.ceil(filteredCustomers.length / itemsPerPage)) {
       setPage(1);
@@ -51,7 +49,6 @@ const CustomerList = () => {
   const startIndex = (page - 1) * itemsPerPage;
   const paginatedCustomers = filteredCustomers.slice(startIndex, startIndex + itemsPerPage);
   const pageCount = Math.ceil(filteredCustomers.length / itemsPerPage);
-
 
   const handleFilterChange = (event) => {
     setFilterBy(event.target.value);
@@ -77,13 +74,10 @@ const CustomerList = () => {
     );
   }
 
-  if (error) {
-    return (
-      <Typography variant="h6" color="error" sx={{ textAlign: "center", mt: 5 }}>
-        {error.message || "Something went wrong"}
-      </Typography>
-    );
+  if (error && !customers.length) {
+    console.error("Customer fetch error:", error); 
   }
+  
 
   return (
     <Box sx={{ p: 3, textAlign: "center", mt: 4 }}>
@@ -107,29 +101,17 @@ const CustomerList = () => {
         </Grid>
       </Grid>
 
-      {filteredCustomers.length === 0 ? (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "50vh",
-          }}
-        >
-          <Typography variant="h6" color="textSecondary">
-            No customers match your search.
-          </Typography>
-        </Box>
-      ) : (
-        <>
-          <ListComponent items={paginatedCustomers} isRestaurant={false} />
-          <CustomPagination
-            page={page}
-            count={pageCount}
-            onChange={(_, value) => setPage(value)}
-          />
-        </>
+      <ListComponent
+        items={paginatedCustomers}
+        noDataMessage="No customers match your search."
+      />
+
+      {filteredCustomers.length > 0 && (
+        <CustomPagination
+          page={page}
+          count={pageCount}
+          onChange={(_, value) => setPage(value)}
+        />
       )}
     </Box>
   );

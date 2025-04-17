@@ -6,7 +6,6 @@ export const fetchReviews = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await API.get("/review");
-      console.log("API DATA:", response.data.data);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to fetch reviews");
@@ -19,8 +18,7 @@ export const deleteReviews = createAsyncThunk(
   async (id, { rejectWithValue, dispatch }) => {
     try {
       await API.delete(`/review/${id}`);
-      dispatch(fetchReviews()); // Refresh after deletion
-      return id;
+      dispatch(fetchReviews());
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Error occurred");
     }

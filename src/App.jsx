@@ -71,6 +71,8 @@ import OrderManagement from "./view/components/Lists/OrderManagement";
 import User from "./view/components/Lists/User";
 import PrivateRoute from "./view/routes/PrivateRoutes"; 
 
+import SalaryManagementList from "./view/components/Lists/SalaryManagementList";
+
 function App() {
   return (
     <Routes>
@@ -95,6 +97,7 @@ function App() {
           <Route path="/orders" element={<OrderManagement />} />
           <Route path="/user" element={<User />} />
           <Route path="/reviews" element={<Review />} />
+          <Route path="/salarylist" element={<SalaryManagementList />} />
         </Route>
       </Route>
     </Routes>

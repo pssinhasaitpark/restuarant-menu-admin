@@ -193,11 +193,7 @@ const StaffList = () => {
         >
           <CircularProgress />
         </Box>
-      ) : error ? (
-        <Typography variant="h6" color="error">
-          {error}
-        </Typography>
-      ) : (
+      )  : (
         <>
           <ListComponent
             items={paginatedTables}
