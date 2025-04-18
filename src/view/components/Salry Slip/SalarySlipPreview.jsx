@@ -1,12 +1,9 @@
-import React, { useRef } from "react";
+import React from "react";
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Typography,
   Box,
-  Button,
+  Typography,
   Divider,
+  Button,
   Table,
   TableBody,
   TableCell,
@@ -14,110 +11,108 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-import { useReactToPrint } from "react-to-print";
 
-const SalarySlipPreview = ({ open, handleClose, data, staff }) => {
-  const componentRef = useRef();
-
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-    documentTitle: `SalarySlip_${staff?.first_name}_${data?.payment_date}`,
-  });
+const SalarySlip = ({ data, staff }) => {
+  const handlePrint = () => {
+    window.print();
+  };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-      <DialogTitle>Salary Slip</DialogTitle>
-      <DialogContent>
-        <Box ref={componentRef} sx={{ p: 3, fontFamily: "Arial" }}>
-          {/* Header */}
-          <Typography variant="h5" align="center" fontWeight="bold">
-            {staff?.restaurant_name || "Restaurant Name"}
+    <Box
+      sx={{
+        padding: 4,
+        maxWidth: "800px",
+        margin: "auto",
+        fontFamily: "Georgia, serif",
+        backgroundColor: "#fff",
+        color: "#000",
+      }}
+    >
+
+      {/* Printable Area */}
+      <Box id="print-section">
+        
+        <Typography variant="h4" align="center" gutterBottom>
+          SALARY SLIP
+        </Typography>
+        <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          mb: 2,
+        }}
+      >
+        <Box>
+          <Typography variant="h6" fontWeight="bold">
+            Foodie's Delight Restaurant
           </Typography>
-          <Typography variant="subtitle1" align="center" gutterBottom>
-            Salary Slip for {new Date(data?.payment_date).toLocaleString("default", { month: "long", year: "numeric" })}
-          </Typography>
-
-          <Divider sx={{ my: 2 }} />
-
-          {/* Employee Info */}
-          <Box display="flex" justifyContent="space-between" mb={2}>
-            <Box>
-              <Typography><strong>Name:</strong> {staff?.first_name} {staff?.last_name}</Typography>
-              <Typography><strong>Designation:</strong> {staff?.designation || "N/A"}</Typography>
-              <Typography><strong>Department:</strong> {staff?.department || "N/A"}</Typography>
-            </Box>
-            <Box>
-              <Typography><strong>Employee ID:</strong> {data?.employee_id || staff?.id}</Typography>
-              <Typography><strong>Bank Name:</strong> {staff?.bank_name || "N/A"}</Typography>
-              <Typography><strong>Account No:</strong> {staff?.account_no || "N/A"}</Typography>
-            </Box>
-          </Box>
-
-          {/* Earnings and Deductions Table */}
-          <TableContainer component={Paper}>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell colSpan={2}><strong>Earnings</strong></TableCell>
-                  <TableCell colSpan={2}><strong>Deductions</strong></TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Basic Salary</TableCell>
-                  <TableCell>₹{data?.base_salary}</TableCell>
-                  <TableCell>EPF</TableCell>
-                  <TableCell>₹{data?.epf || 0}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Bonus</TableCell>
-                  <TableCell>₹{data?.bonus || 0}</TableCell>
-                  <TableCell>Health Insurance</TableCell>
-                  <TableCell>₹{data?.health_insurance || 0}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>Professional Tax</TableCell>
-                  <TableCell>₹{data?.prof_tax || 0}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>TDS</TableCell>
-                  <TableCell>₹{data?.tds || 0}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell><strong>Gross Salary</strong></TableCell>
-                  <TableCell><strong>₹{data?.gross_salary}</strong></TableCell>
-                  <TableCell><strong>Total Deductions</strong></TableCell>
-                  <TableCell><strong>₹{data?.total_deduction}</strong></TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-
-          {/* Net Pay */}
-          <Box textAlign="center" mt={4}>
-            <Typography variant="h6">
-              <strong>Net Pay: ₹{data?.total_pay_amount}</strong>
-            </Typography>
-            <Typography variant="body2">
-              <strong>In Words:</strong> {/* Optional: convert number to words */}
-            </Typography>
-          </Box>
+          <Typography variant="subtitle2">fooddelight@gmail.com</Typography>
+          <Typography variant="subtitle2">123 Corporate Street</Typography>
+          <Typography variant="subtitle2">Mumbai, India</Typography>
         </Box>
 
-        {/* Buttons */}
-        <Box display="flex" justifyContent="center" mt={3} mb={1}>
-          <Button variant="contained" color="primary" onClick={handlePrint} sx={{ mr: 2 }}>
-            Print
-          </Button>
-          <Button variant="outlined" onClick={handleClose}>
-            Close
-          </Button>
+      </Box>
+        <Divider sx={{ my: 2 }} />
+
+        {/* Pay Period & Employee Info */}
+        <Box mb={2}>
+          <Typography>
+            <strong>Employee Name:</strong> {staff.first_name} {staff.last_name}
+          </Typography>
+          <Typography>
+            <strong>Position:</strong> {staff.designation}
+          </Typography>
+          <Typography>
+            <strong>Pay Date:</strong>{" "}
+            {new Date(data.payment_date).toLocaleDateString()}
+          </Typography>
+          {/* <Typography>
+            <strong>Employee ID:</strong> {staff.employee_id}
+          </Typography> */}
         </Box>
-      </DialogContent>
-    </Dialog>
+
+        <Divider sx={{ my: 2 }} />
+
+        {/* Full Salary Table */}
+        <TableContainer component={Paper} elevation={1}>
+          <Table size="small">
+            <TableBody>
+              <TableRow>
+                <TableCell><strong>Base Salary</strong></TableCell>
+                <TableCell>₹{data.base_salary}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell><strong>Bonus</strong></TableCell>
+                <TableCell>₹{data.bonus}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell><strong>Gross Salary</strong></TableCell>
+                <TableCell>₹{data.gross_salary}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell><strong>Absence Days</strong></TableCell>
+                <TableCell>{data.absence_days}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell><strong>Total Deductions</strong></TableCell>
+                <TableCell>₹{data.total_deduction}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell><strong>Net Pay</strong></TableCell>
+                <TableCell><strong>₹{data.total_pay_amount}</strong></TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        {/* Signature */}
+        <Box display="flex" justifyContent="space-between" mt={5}>
+          <Typography>Employee Signature: ______________</Typography>
+          <Typography>Authorized Signature: ______________</Typography>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 
-export default SalarySlipPreview;
+export default SalarySlip;

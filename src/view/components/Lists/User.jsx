@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import ListComponent from "../../components/ListComponents/ListComponents";
 import CustomPagination from "../CustomPagination/CustomPagination";
-import ConfirmationDialog from "../ConfirtmationDialog";
+import ConfirmationDialog from "../Dialogbox/ConfirtmationDialog";
 import {
   fetchUser,
   deleteUser,

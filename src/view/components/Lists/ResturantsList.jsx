@@ -9,7 +9,7 @@ import {
   Pagination,
 } from "@mui/material";
 import ListComponent from "../ListComponents/ListComponents";
-import ConfirmationDialog from "../ConfirtmationDialog";
+import ConfirmationDialog from "../Dialogbox/ConfirtmationDialog";
 import RestaurantForm from "../Forms/RestaurantForm";
 import {
   fetchRestaurants,

@@ -29,6 +29,7 @@ const ListComponent = ({
   isOrder,
   isStock,
   noDataMessage,
+  onReply,
 }) => {
   const navigate = useNavigate();
 
@@ -97,11 +98,14 @@ const ListComponent = ({
                 <TableCell>
                   <strong>Contact No</strong>
                 </TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <strong>Subject</strong>
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
                   <strong>Issues</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Reply</strong>
                 </TableCell>
               </>
             ) : isStaff ? (
@@ -320,7 +324,7 @@ const ListComponent = ({
                             <Button
                               size="small"
                               variant="outlined"
-                              onClick={() => onEdit(item)} 
+                              onClick={() => onEdit(item)}
                             >
                               Generate
                             </Button>
@@ -382,11 +386,26 @@ const ListComponent = ({
                       </>
                     ) : isSupport ? (
                       <>
-                        <TableCell>{item.name}</TableCell>
+                        <TableCell>{item.user_name}</TableCell>
                         <TableCell>{item.email}</TableCell>
-                        <TableCell>{item.phone_no}</TableCell>
-                        <TableCell>{item.subject}</TableCell>
+                        <TableCell>{item.mobile_no}</TableCell>
                         <TableCell>{item.issues}</TableCell>
+                        <TableCell>
+                          {/* <button onClick={() => onReply(item)}>Reply</button> */}
+                          <Button
+                            variant="outlined"
+                            sx={{
+                              borderColor: "#4caf50",
+                              color: "#4caf50",
+                              "&:hover": {
+                                backgroundColor: "rgba(76, 175, 80, 0.1)",
+                              },
+                            }}
+                            onClick={() => onReply(item)}
+                          >
+                            Reply 
+                          </Button>
+                        </TableCell>
                       </>
                     ) : isStaff ? (
                       <>
@@ -401,10 +420,10 @@ const ListComponent = ({
                         <TableCell>{item.joining_date}</TableCell>
                         <TableCell>
                           <Button
-                            variant="outlined" 
+                            variant="outlined"
                             sx={{
-                              borderColor: "#4caf50", 
-                              color: "#4caf50", 
+                              borderColor: "#4caf50",
+                              color: "#4caf50",
                               "&:hover": {
                                 backgroundColor: "rgba(76, 175, 80, 0.1)",
                               },

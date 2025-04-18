@@ -7,9 +7,39 @@ export const fetchSupportQuery = createAsyncThunk(
   'support/fetchSupportQuery',
   async () => {
     const response = await API.get('/support'); 
+ 
+    
     return response.data.data;
+
   }
 );
+export const sendSupportReply = createAsyncThunk(
+  'support/sendSupportReply',
+  async ({ id, message }, { rejectWithValue }) => {
+    try {
+      const response = await API.post(`/support/issues/${id}`, {
+        message, // ✅ use "message" as the key, not "reply"
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Error sending reply');
+    }
+  }
+);
+
+
+export const getSupportQueryById = createAsyncThunk(
+  'support/getSupportQueryById',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await API.get(`/support/replies/${id}`);
+      return response.data.data; // Assuming `data` has issue info
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Error fetching issue');
+    }
+  }
+);
+
 
 export const deleteSupportQuery = createAsyncThunk(
   'support/deleteSupportQuery',

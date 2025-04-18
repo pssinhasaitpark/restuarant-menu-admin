@@ -72,6 +72,7 @@ import User from "./view/components/Lists/User";
 import PrivateRoute from "./view/routes/PrivateRoutes"; 
 
 import SalaryManagementList from "./view/components/Lists/SalaryManagementList";
+import SocialMedia from "./view/pages/SocialMedia/SocialMedia";
 
 function App() {
   return (
@@ -98,6 +99,7 @@ function App() {
           <Route path="/user" element={<User />} />
           <Route path="/reviews" element={<Review />} />
           <Route path="/salarylist" element={<SalaryManagementList />} />
+          <Route path="/socialmedia" element={<SocialMedia />} />
         </Route>
       </Route>
     </Routes>
