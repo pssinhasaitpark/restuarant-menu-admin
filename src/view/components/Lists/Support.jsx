@@ -13,7 +13,8 @@ import {
 } from "@mui/material";
 import ListComponent from "../../components/ListComponents/ListComponents";
 import CustomPagination from "../CustomPagination/CustomPagination";
-import ConfirmationDialog from "../ConfirtmationDialog";
+import ConfirmationDialog from "../Dialogbox/ConfirtmationDialog";
+import ReplyDialog from "../Dialogbox/SupportReplyDialogbox";
 import {
   fetchSupportQuery,
   deleteSupportQuery,
@@ -29,27 +30,30 @@ const Support = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
-  // Search Filter States
-  const [filterBy, setFilterBy] = useState("name");
+  const [openReplyDialog, setOpenReplyDialog] = useState(false);
+  const [selectedSupportItem, setSelectedSupportItem] = useState(null);
+
+  const [filterBy, setFilterBy] = useState("user_name");
   const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
     dispatch(fetchSupportQuery());
   }, [dispatch]);
 
-  //  Filter the support data
   const filteredSupport = support.filter((item) => {
     const value = searchValue.toLowerCase();
-    if (filterBy === "name") {
-      return item.name?.toLowerCase().includes(value);
+    if (filterBy === "user_name") {
+      return item.user_name?.toLowerCase().includes(value);
     }
     if (filterBy === "email") {
       return item.email?.toLowerCase().includes(value);
     }
+    if (filterBy === "mobile_no") {
+      return item.mobile_no?.toLowerCase().includes(value);
+    }
     return true;
   });
 
-  // Reset page if filtered results get shorter
   useEffect(() => {
     if (page > Math.ceil(filteredSupport.length / itemsPerPage)) {
       setPage(1);
@@ -85,6 +89,21 @@ const Support = () => {
     setPage(1);
   };
 
+  const handleReplyClick = (item) => {
+    setSelectedSupportItem(item);
+    setOpenReplyDialog(true);
+  };
+
+  const handleReplyClose = () => {
+    setOpenReplyDialog(false);
+    setSelectedSupportItem(null);
+  };
+
+  const handleReplySubmit = (id, replyText) => {
+    console.log("Reply submitted for ID:", id, "Message:", replyText);
+    handleReplyClose();
+  };
+
   const startIndex = (page - 1) * itemsPerPage;
   const paginatedSupport = filteredSupport.slice(startIndex, startIndex + itemsPerPage);
   const pageCount = Math.ceil(filteredSupport.length / itemsPerPage);
@@ -107,21 +126,22 @@ const Support = () => {
 
   return (
     <Box sx={{ p: 3, textAlign: "center", mt: 4 }}>
-      {/*  Filter Controls */}
+      {/* Filter Controls */}
       <Grid container spacing={2} mb={4}>
         <Grid item xs={12} sm={3}>
           <FormControl fullWidth>
             <InputLabel>Filter By</InputLabel>
             <Select value={filterBy} label="Filter By" onChange={handleFilterChange}>
-              <MenuItem value="name">Name</MenuItem>
+              <MenuItem value="user_name">Name</MenuItem>
               <MenuItem value="email">Email</MenuItem>
+              <MenuItem value="mobile_no">Mobile No</MenuItem>
             </Select>
           </FormControl>
         </Grid>
         <Grid item xs={12} sm={4}>
           <TextField
             fullWidth
-            label={`Search by ${filterBy}`}
+            label={`Search by ${filterBy.replace("_", " ")}`}
             value={searchValue}
             onChange={handleSearchChange}
           />
@@ -148,6 +168,7 @@ const Support = () => {
             items={paginatedSupport}
             isSupport={true}
             onDelete={handleDeleteClick}
+            onReply={handleReplyClick}
           />
           <CustomPagination
             page={page}
@@ -157,11 +178,19 @@ const Support = () => {
         </>
       )}
 
-      {/* 🗑️ Delete Confirmation Dialog */}
+      {/* Delete Confirmation Dialog */}
       <ConfirmationDialog
         open={openDialog}
         onClose={handleDialogClose}
         onConfirm={handleDeleteConfirm}
+      />
+
+      {/* Reply Dialog */}
+      <ReplyDialog
+        open={openReplyDialog}
+        onClose={handleReplyClose}
+        onSubmit={handleReplySubmit}
+        selectedItem={selectedSupportItem}
       />
     </Box>
   );

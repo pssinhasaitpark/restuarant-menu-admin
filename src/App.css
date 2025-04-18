@@ -7,4 +7,9 @@ body{
     background-color:#e0e0e0 ;
 }
 
+@media print {
+    .no-print {
+      display: none !important;
+    }
+  }
   

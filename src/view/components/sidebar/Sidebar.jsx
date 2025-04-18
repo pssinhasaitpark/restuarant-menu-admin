@@ -59,6 +59,7 @@ const Sidebar = ({ drawerOpen, toggleDrawer }) => {
     },
     { text: "support", icon: <SupportAgent />, path: "/support" },
     { text: "Customer Experience", icon: <HotelClass />, path: "/reviews" },
+    { text: "Social Media", icon: <HotelClass />, path: "/socialmedia" },
 
   ];
 

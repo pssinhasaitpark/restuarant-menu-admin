@@ -9,7 +9,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import ConfirmationDialog from "../ConfirtmationDialog";
+import ConfirmationDialog from "../Dialogbox/ConfirtmationDialog";
 import MenuForm from "../Forms/menu";
 import MenuCardList from "../Card/MenuCardList";
 import {

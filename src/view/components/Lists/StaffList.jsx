@@ -14,7 +14,7 @@ import {
   Grid,
 } from "@mui/material";
 import ListComponent from "../ListComponents/ListComponents";
-import ConfirmationDialog from "../ConfirtmationDialog";
+import ConfirmationDialog from "../Dialogbox/ConfirtmationDialog";
 import CreateStaffForm from "../../pages/StaffForm/StaffForm";
 import CustomPagination from "../CustomPagination/CustomPagination";
 
