@@ -14,6 +14,7 @@ import {
   HotelClass,
   Feedback,
   SupervisedUserCircle,
+  Diversity1,
 } from "@mui/icons-material";
 import {
   Drawer,
@@ -37,50 +38,45 @@ const Sidebar = ({ drawerOpen, toggleDrawer }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  const handleLogout = () => {
-    localStorage.removeItem("authToken");
-    navigate("/login");
-  };
   const userType = localStorage.getItem("userType");
 
   // Define menu items
-  const menuItems = [
-    { text: "Dashboard", icon: <Dashboard />, path: "/" },
-    { text: "Menu", icon: <RestaurantMenu />, path: "/menulist" },
-    { text: "Customers Orders", icon: <Group />, path: "/customers" },
-     { text: "Orders Management", icon: <Fastfood />, path: "/orders" },
-     { text: "Stock Management", icon: <Inventory />, path: "/stock" },
-     { text: "Staff", icon: <PersonAddAlt />, path: "/stafflist" },
-    //  { text: "Salary Management", icon: <PersonAddAlt />, path: "/salarylist" },
-    {
-      text: "Restaurant Table",
-      icon: <TableRestaurant />,
-      path: "/createlist",
-    },
-    { text: "support", icon: <SupportAgent />, path: "/support" },
-    { text: "Customer Experience", icon: <HotelClass />, path: "/reviews" },
-    { text: "Social Media", icon: <HotelClass />, path: "/socialmedia" },
-
-  ];
+  let menuItems = [];
 
   if (userType === "super_admin") {
-    menuItems.push({
-      text: "Restaurants",
-      icon: <TableChart />,
-      path: "/restaurantform",
-    });
-    menuItems.push({
-      text: "Feedback",
-      icon: <Feedback />,
-      path: "/customers",
-    });
-    menuItems.push({
-      text: "Document",
-      icon: <TableChart />,
-      path: "/menulist",
-    });
-    menuItems.push({ text: "User", icon: <SupervisedUserCircle />, path: "/user" });
+    menuItems = [
+      { text: "Dashboard", icon: <Dashboard />, path: "/" },
+      { text: "Support", icon: <SupportAgent />, path: "/support" },
+      {
+        text: "Restaurants",
+        icon: <TableChart />,
+        path: "/restaurantform",
+      },
+      {
+        text: "Customer Experience",
+        icon: <HotelClass />,
+        path: "/reviews",
+      },
+    ];
+  } else {
+    menuItems = [
+      { text: "Dashboard", icon: <Dashboard />, path: "/" },
+      { text: "Menu", icon: <RestaurantMenu />, path: "/menulist" },
+      { text: "Customers Orders", icon: <Group />, path: "/customers" },
+      { text: "Orders Management", icon: <Fastfood />, path: "/orders" },
+      { text: "Stock Management", icon: <Inventory />, path: "/stock" },
+      { text: "Staff", icon: <PersonAddAlt />, path: "/stafflist" },
+      {
+        text: "Restaurant Table",
+        icon: <TableRestaurant />,
+        path: "/createlist",
+      },
+      { text: "Support", icon: <SupportAgent />, path: "/support" },
+      { text: "Customer Experience", icon: <HotelClass />, path: "/reviews" },
+      { text: "Social Media", icon: <Diversity1 />, path: "/socialmedia" },
+    ];
   }
+  
 
   return (
     <Drawer
@@ -154,20 +150,7 @@ const Sidebar = ({ drawerOpen, toggleDrawer }) => {
         ))}
       </List>
 
-      <Divider sx={{ mt: "auto" }} />
-
-      {/* Logout Button */}
-      {/* <Box sx={{ textAlign: "center", p: 2 }}>
-        <Button
-          variant="contained"
-          color="error"
-          startIcon={<LogoutIcon />}
-          fullWidth
-          onClick={handleLogout}
-        >
-          Logout
-        </Button>
-      </Box> */}
+      <Divider sx={{ mt: "auto" }}/>
     </Drawer>
   );
 };

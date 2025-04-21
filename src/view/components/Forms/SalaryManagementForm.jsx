@@ -92,12 +92,13 @@ const SalaryManagementForm = ({ open, handleClose, employeeId }) => {
             </Grid>
 
             <Grid item xs={6}>
-              <FormControl required>
+              <FormControl  required>
                 <InputLabel>Month</InputLabel>
                 <Select
                   value={month}
                   label="Month"
                   onChange={(e) => setMonth(e.target.value)}
+                 sx={{width:"235px"}}
                 >
                   {months.map((m) => (
                     <MenuItem key={m} value={m}>
@@ -120,7 +121,7 @@ const SalaryManagementForm = ({ open, handleClose, employeeId }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sx={{ textAlign: "right", mt: 2 }}>
+            <Grid item xs={12} sx={{ textAlign: "center", mt: 2 }}>
               <Button type="submit" variant="contained" color="primary">
                 Save
               </Button>
