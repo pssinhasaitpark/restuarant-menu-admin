@@ -98,9 +98,6 @@ const ListComponent = ({
                 <TableCell>
                   <strong>Contact No</strong>
                 </TableCell>
-                {/* <TableCell>
-                  <strong>Subject</strong>
-                </TableCell> */}
                 <TableCell>
                   <strong>Issues</strong>
                 </TableCell>
@@ -183,9 +180,6 @@ const ListComponent = ({
                   <strong>Total</strong>
                 </TableCell>
                 <TableCell>
-                  <strong>Payment</strong>
-                </TableCell>
-                <TableCell>
                   <strong>Invoice</strong>
                 </TableCell>
               </>
@@ -244,9 +238,11 @@ const ListComponent = ({
                 </TableCell>
               </>
             )}
-            <TableCell>
-              <strong>Actions</strong>
-            </TableCell>
+            {!isOrder && (
+              <TableCell>
+                <strong>Actions</strong>
+              </TableCell>
+            )}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -308,18 +304,16 @@ const ListComponent = ({
                       )}
                       <TableCell>{menuItem.name}</TableCell>
                       <TableCell>{menuItem.quantity}</TableCell>
-                      <TableCell>{menuItem.price}</TableCell>
+                      <TableCell>₹{menuItem.price}</TableCell>
                       <TableCell>
-                        {(menuItem.quantity * menuItem.price).toFixed(2)}
+                      ₹{(menuItem.quantity * menuItem.price).toFixed(2)}
                       </TableCell>
                       {idx === 0 && (
                         <>
                           <TableCell rowSpan={item.items.length}>
-                            {item.total_amount}
+                          ₹{item.total_amount}
                           </TableCell>
-                          <TableCell rowSpan={item.items.length}>
-                            {item.payment_status}
-                          </TableCell>
+
                           <TableCell rowSpan={item.items.length}>
                             <Button
                               size="small"
@@ -343,10 +337,16 @@ const ListComponent = ({
                     <TableCell>{item.price_per_unit}</TableCell>
                     <TableCell>{item.total_price}</TableCell>
                     <TableCell>
-                      <IconButton onClick={() => handleOpenDialog(item)}>
+                      <IconButton
+                        color="success"
+                        onClick={() => handleOpenDialog(item)}
+                      >
                         <Edit />
                       </IconButton>
-                      <IconButton onClick={() => handleDelete(item.id)}>
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDelete(item.id)}
+                      >
                         <Delete />
                       </IconButton>
                     </TableCell>
@@ -403,7 +403,7 @@ const ListComponent = ({
                             }}
                             onClick={() => onReply(item)}
                           >
-                            Reply 
+                            Reply
                           </Button>
                         </TableCell>
                       </>

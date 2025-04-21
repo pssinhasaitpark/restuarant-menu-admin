@@ -16,6 +16,8 @@ const StockManagement = () => {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+  const [openReport, setOpenReport] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
 
   useEffect(() => {
     dispatch(fetchAllStockItems());
@@ -53,6 +55,26 @@ const StockManagement = () => {
     dispatch(deleteStockItem(id));
   };
 
+  const handleGenerateReport = () => {
+    setOpenReport(true);
+  };
+
+  const handleCloseReport = () => {
+    setOpenReport(false);
+  };
+
+  const handlePrintReport = () => {
+    setIsPrinting(true);
+    window.print();
+  };
+
+  const calculateTotalPrice = () => {
+    return stockItems.reduce(
+      (total, item) => total + item.price_per_unit * item.quantity,
+      0
+    );
+  };
+
   return (
     <Box sx={{ p: 4 }}>
       <Box
@@ -71,11 +93,37 @@ const StockManagement = () => {
           </Typography>
         </Box>
 
-        <Button variant="contained" color="success" onClick={handleOpenDialog}>
-          Add Stock Item
-        </Button>
+        <Box sx={{ display: "flex", gap: 2 }}>
+          {/* Generate Report Button */}
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: "transparent",
+              color: "primary.main",
+              border: "1px solid",
+              borderColor: "primary.main",
+              "&:hover": {
+                backgroundColor: "#81C784",
+                borderColor: "#81C784",
+                color: "white",
+              },
+            }}
+            onClick={handleGenerateReport}
+          >
+            Generate Report
+          </Button>
+
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => handleOpenDialog(null)}
+          >
+            Add Stock Item
+          </Button>
+        </Box>
       </Box>
 
+      {/* Stock Item List */}
       <ListComponent
         items={stockItems}
         onEdit={handleOpenDialog}
@@ -85,6 +133,7 @@ const StockManagement = () => {
         isStock={true}
       />
 
+      {/* Stock Item Dialog */}
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}
@@ -96,6 +145,124 @@ const StockManagement = () => {
           onClose={handleCloseDialog}
           onSave={handleSaveItem}
         />
+      </Dialog>
+
+      {/* Generate Report Dialog */}
+      <Dialog
+        open={openReport}
+        onClose={handleCloseReport}
+        fullWidth
+        maxWidth="md"
+      >
+        <Box sx={{ padding: 2 }}>
+          <Typography variant="h6" align="center" gutterBottom>
+            Stock Report
+          </Typography>
+
+          <div id="report-section">
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr>
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>
+                    Item Name
+                  </th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>
+                    Category
+                  </th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>
+                    Price
+                  </th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>
+                    Quantity
+                  </th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>
+                    Total Value
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {stockItems.map((item, index) => (
+                  <tr key={index}>
+                    <td
+                      style={{
+                        border: "1px solid #ddd",
+                        padding: "8px",
+                        textAlign: "center",
+                      }}
+                    >
+                      {item.item_name}
+                    </td>
+                    <td
+                      style={{
+                        border: "1px solid #ddd",
+                        padding: "8px",
+                        textAlign: "center",
+                      }}
+                    >
+                      {item.category_name}
+                    </td>
+                    <td
+                      style={{
+                        border: "1px solid #ddd",
+                        padding: "8px",
+                        textAlign: "center",
+                      }}
+                    >
+                      ₹{item.price_per_unit}
+                    </td>
+                    <td
+                      style={{
+                        border: "1px solid #ddd",
+                        padding: "8px",
+                        textAlign: "center",
+                      }}
+                    >
+                      {item.quantity}
+                    </td>
+                    <td
+                      style={{
+                        border: "1px solid #ddd",
+                        padding: "8px",
+                        textAlign: "center",
+                      }}
+                    >
+                      ₹{item.price_per_unit * item.quantity}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Total Price Row */}
+            <Box sx={{ mt: 2, textAlign: "right" }}>
+              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                Total Price: ₹{calculateTotalPrice()}
+              </Typography>
+            </Box>
+          </div>
+
+          {/* Print and Close Buttons */}
+
+          <Box
+            className="no-print"
+            sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handlePrintReport}
+            >
+              Print Report
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleCloseReport}
+            >
+              Close
+            </Button>
+          </Box>
+        </Box>
       </Dialog>
     </Box>
   );

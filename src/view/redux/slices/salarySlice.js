@@ -1,5 +1,3 @@
-// salarySlice.js
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import API from "../axios/axios";
 
@@ -9,21 +7,24 @@ export const fetchSalaryDetails = createAsyncThunk(
   async (staffId, thunkAPI) => {
     try {
       const response = await API.get(`/salary/${staffId}`);
-      return response.data.data; // Assuming response contains a `data` property with the data we need
+      
+      return {
+        staff: response.data.data.staff,
+        salaryDetails: response.data.data.salary_details,
+        restaurantDetails: response.data.data.restaurant_details, 
+      };
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
   }
 );
 
-// Thunk to add salary details (new POST action)
 export const addSalaryDetails = createAsyncThunk(
   "salary/addSalaryDetails",
   async ({ employeeId, salaryData }, thunkAPI) => {
     try {
-      // Send the employeeId as part of the URL and salaryData in the body
       const response = await API.post(`/salary/${employeeId}`, salaryData);
-      return response.data.data; // Assuming response contains a `data` property with the added salary data
+      return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
@@ -34,6 +35,7 @@ const salarySlice = createSlice({
   name: "salary",
   initialState: {
     staff: {},
+    restaurantDetails: {},
     salaryDetails: [],
     loading: false,
     error: null,
@@ -41,6 +43,7 @@ const salarySlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // Fetch Salary Details
       .addCase(fetchSalaryDetails.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -48,20 +51,21 @@ const salarySlice = createSlice({
       .addCase(fetchSalaryDetails.fulfilled, (state, action) => {
         state.loading = false;
         state.staff = action.payload.staff;
-        state.salaryDetails = action.payload.salary_details; // Assuming the API returns this structure
+        state.salaryDetails = action.payload.salaryDetails; 
+        state.restaurantDetails = action.payload.restaurantDetails; 
       })
       .addCase(fetchSalaryDetails.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
+      
       .addCase(addSalaryDetails.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(addSalaryDetails.fulfilled, (state, action) => {
         state.loading = false;
-        // Optionally, you can append the new salary data to the list
-        state.salaryDetails.push(action.payload);
+        state.salaryDetails.push(action.payload); 
       })
       .addCase(addSalaryDetails.rejected, (state, action) => {
         state.loading = false;

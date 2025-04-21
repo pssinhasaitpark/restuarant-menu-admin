@@ -53,14 +53,14 @@ const MenuCardList = ({
 
   return (
     <>
-      <Box display="flex" flexWrap="wrap" justifyContent="start" gap={3}>
+      <Box display="flex" flexWrap="wrap" justifyContent="start" gap={2} >
         {paginatedItems.map((item, index) => (
           <Box
             key={item.id}
             sx={{
               width: { xs: "100%", sm: "45%", md: "30%", lg: "22%", xl: "14%" },
               mb: 3,
-              mr: { xs: 0, xl: (index + 1) % 6 === 0 ? 0 : 3.6 },
+              mr: { xs: 0, xl: (index + 1) % 6 === 0 ? 0 : 3.8 },
             }}
           >
             <Card sx={{ borderRadius: 4, boxShadow: 3, height: "100%" }}>
