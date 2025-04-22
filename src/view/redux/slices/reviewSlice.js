@@ -5,7 +5,7 @@ export const fetchReviews = createAsyncThunk(
   "reviews/fetchReviews",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await API.get("/review");
+      const response = await API.get("/review/restaurant");
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to fetch reviews");

@@ -1,5 +1,3 @@
-// redux/slices/supportquerySlice.js
-
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import API from '../axios/axios'; 
 
@@ -16,7 +14,7 @@ export const deleteUser = createAsyncThunk(
   async (id, { rejectWithValue, dispatch }) => {
     try {
       await API.delete(`/user/${id}`);
-      dispatch(fetchUser()); // Optional: can rely only on reducer update if desired
+      dispatch(fetchUser());
       return id;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Error occurred');

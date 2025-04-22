@@ -231,10 +231,10 @@ const OrderManagement = () => {
                   </Grid>
                   <Grid item xs={6}>
                     <Typography variant="body2" >
-                    <strong>Order Date:</strong> {new Date(selectedInvoice.createdAt).toLocaleDateString()}
+                      <strong>Customer:</strong> {selectedInvoice.customer_name}
                     </Typography>
                     <Typography variant="body2" >
-                      <strong>Customer:</strong> {selectedInvoice.customer_name}
+                    <strong>Order Date:</strong> {new Date(selectedInvoice.createdAt).toLocaleDateString()}
                     </Typography>
                   </Grid>
                 </Grid>

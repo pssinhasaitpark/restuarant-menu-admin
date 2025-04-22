@@ -116,13 +116,6 @@ const Support = () => {
     );
   }
 
-  if (error) {
-    return (
-      <Typography variant="h6" color="error" align="center" mt={4}>
-        {error}
-      </Typography>
-    );
-  }
 
   return (
     <Box sx={{ p: 3, textAlign: "center", mt: 4 }}>

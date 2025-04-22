@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Card,
@@ -8,20 +8,32 @@ import {
   Grid,
   Rating,
   CircularProgress,
-  IconButton,
   Box,
 } from "@mui/material";
 import { green } from "@mui/material/colors";
-import { fetchReviews, deleteReviews } from "../../redux/slices/reviewSlice";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { fetchReviews } from "../../redux/slices/reviewSlice";
+import CustomPagination from "../../components/CustomPagination/CustomPagination";
 
 const ReviewPage = () => {
   const dispatch = useDispatch();
   const { review, loading, error } = useSelector((state) => state.reviews);
 
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 4;
+
   useEffect(() => {
     dispatch(fetchReviews());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (page > Math.ceil(review.length / itemsPerPage)) {
+      setPage(1);
+    }
+  }, [review, page, itemsPerPage]);
+
+  const startIndex = (page - 1) * itemsPerPage;
+  const paginatedReviews = review.slice(startIndex, startIndex + itemsPerPage);
+  const pageCount = Math.ceil(review.length / itemsPerPage);
 
   return (
     <div style={{ padding: "20px" }}>
@@ -39,7 +51,7 @@ const ReviewPage = () => {
       )}
 
       <Grid container spacing={2}>
-        {review.map((rev) => (
+        {paginatedReviews.map((rev) => (
           <Grid item xs={12} key={rev.id} sx={{ width: "100%" }}>
             <Card elevation={3}>
               <CardContent
@@ -92,6 +104,17 @@ const ReviewPage = () => {
           </Grid>
         ))}
       </Grid>
+
+      {/* Pagination */}
+      {pageCount > 1 && (
+        <Box mt={4} display="flex" justifyContent="center">
+          <CustomPagination
+            page={page}
+            count={pageCount}
+            onChange={(event, value) => setPage(value)}
+          />
+        </Box>
+      )}
     </div>
   );
 };

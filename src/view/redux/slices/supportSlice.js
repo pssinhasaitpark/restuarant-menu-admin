@@ -1,24 +1,20 @@
-// redux/slices/supportquerySlice.js
-
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import API from '../axios/axios'; 
 
 export const fetchSupportQuery = createAsyncThunk(
   'support/fetchSupportQuery',
   async () => {
-    const response = await API.get('/support'); 
- 
-    
+    const response = await API.get('/support');    
     return response.data.data;
-
   }
 );
+
 export const sendSupportReply = createAsyncThunk(
   'support/sendSupportReply',
   async ({ id, message }, { rejectWithValue }) => {
     try {
       const response = await API.post(`/support/issues/${id}`, {
-        message, // ✅ use "message" as the key, not "reply"
+        message, 
       });
       return response.data;
     } catch (error) {
@@ -26,7 +22,6 @@ export const sendSupportReply = createAsyncThunk(
     }
   }
 );
-
 
 export const getSupportQueryById = createAsyncThunk(
   'support/getSupportQueryById',
