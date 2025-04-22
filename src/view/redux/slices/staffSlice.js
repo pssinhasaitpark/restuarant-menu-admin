@@ -42,6 +42,7 @@ export const fetchStaffById = createAsyncThunk("staff/fetchById", async (id, { r
     return rejectWithValue(error.response?.data || error.message);
   }
 });
+
 export const updateStaff = createAsyncThunk("staff/updateStaff", async ({ id, staffData }, { rejectWithValue }) => {
     try {
       const formData = new FormData();
@@ -59,7 +60,6 @@ export const updateStaff = createAsyncThunk("staff/updateStaff", async ({ id, st
     }
   });
   
-
 export const deleteStaff = createAsyncThunk("staff/delete", async (id, { rejectWithValue }) => {
   try {
     await API.delete(`/staff/${id}`);

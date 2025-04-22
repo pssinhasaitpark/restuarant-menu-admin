@@ -63,10 +63,10 @@ const MenuCardList = ({
               mr: { xs: 0, xl: (index + 1) % 6 === 0 ? 0 : 3.8 },
             }}
           >
-            <Card sx={{ borderRadius: 4, boxShadow: 3, height: "100%" }}>
+            <Card sx={{ borderRadius: 4, boxShadow: 3, height: "94%" }}>
               <CardMedia
                 component="img"
-                height="180"
+                height="156"
                 image={
                   item.image ||
                   (Array.isArray(item.images) && item.images[0]) ||
@@ -101,11 +101,11 @@ const MenuCardList = ({
                       <DeleteIcon />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Duplicate">
+                  {/* <Tooltip title="Duplicate">
                     <IconButton onClick={() => onDuplicate(item)} color="info">
                       <FileCopyIcon />
                     </IconButton>
-                  </Tooltip>
+                  </Tooltip> */}
                 </Box>
               </CardContent>
             </Card>

@@ -121,7 +121,7 @@ const createmenuSlice = createSlice({
       .addCase(createMenuItem.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
-        state.items.push(action.payload); // Optional: if you want to update UI instantly
+        state.items.push(action.payload);
       })
       .addCase(createMenuItem.rejected, (state, action) => {
         state.loading = false;

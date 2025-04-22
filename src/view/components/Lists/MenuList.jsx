@@ -192,7 +192,7 @@ const RestaurantMenuList = () => {
   }
 
   return (
-    <Box sx={{ p: 3, textAlign: "center", mt: 4 }}>
+    <Box sx={{ p: 3, textAlign: "center" }}>
       <Box
         sx={{
           display: "flex",
@@ -227,7 +227,7 @@ const RestaurantMenuList = () => {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            height: "50vh",
+            height: "50px",
           }}
         >
           <Typography variant="h6" color="textSecondary">

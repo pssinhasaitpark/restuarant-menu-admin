@@ -27,6 +27,7 @@ export const fetchRestaurants = createAsyncThunk(
     }
   }
 );
+
 export const fetchRestaurantById = createAsyncThunk(
   "restaurant/fetchById",
   async (id, { rejectWithValue }) => {

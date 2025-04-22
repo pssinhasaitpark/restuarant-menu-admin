@@ -9,19 +9,24 @@ import {
   IconButton,
   InputBase,
   Typography,
+  useMediaQuery,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import {
   Search,
   Notifications,
-  ShoppingCart,
-  Settings,
   Sunny,
   Bedtime,
+  MoreVert, // More options (three dots)
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { ThemeContext } from "../../contexts/ThemeContext";
 
+// Styled SearchBar Component
 const SearchBar = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -36,19 +41,33 @@ const SearchBar = styled("div")(({ theme }) => ({
 const Header = () => {
   const { darkMode, toggleTheme } = useContext(ThemeContext);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
 
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
   const handleMenuClick = (event) => setAnchorEl(event.currentTarget);
+  const handleMobileMenuClick = (event) => setMobileMenuAnchor(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
+  const handleMobileMenuClose = () => setMobileMenuAnchor(null);
+
   const handleProfileClick = () => {
     navigate("/profile");
     handleMenuClose();
+    handleMobileMenuClose();
+    setDrawerOpen(false);
   };
+
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     navigate("/login");
     handleMenuClose();
+    handleMobileMenuClose();
+    setDrawerOpen(false);
   };
+
+  const handleDrawerToggle = () => setDrawerOpen(!drawerOpen);
 
   return (
     <AppBar
@@ -61,7 +80,6 @@ const Header = () => {
         boxShadow: darkMode ? "none" : "0px 4px 8px rgba(255, 255, 255, 0.6)",
         border: darkMode ? "none" : "1px solid rgba(255, 255, 255, 0.6)",
       }}
-      
     >
       <Toolbar
         sx={{
@@ -70,16 +88,18 @@ const Header = () => {
           marginLeft: 34,
         }}
       >
-        {/* Search Bar */}
-        <SearchBar>
-          <InputBase
-            placeholder="Search here"
-            sx={{ flex: 1, color: darkMode ? "#fff" : "#000" }}
-          />
-          <IconButton>
-            <Search sx={{ color: darkMode ? "#fff" : "#000" }} />
-          </IconButton>
-        </SearchBar>
+        {/* Search Bar (Only visible on Desktop) */}
+        {!isMobile && (
+          <SearchBar>
+            <InputBase
+              placeholder="Search here"
+              sx={{ flex: 1, color: darkMode ? "#fff" : "#000" }}
+            />
+            <IconButton>
+              <Search sx={{ color: darkMode ? "#fff" : "#000" }} />
+            </IconButton>
+          </SearchBar>
+        )}
 
         {/* Icons Section */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -96,28 +116,61 @@ const Header = () => {
             )}
           </IconButton>
 
-          {/* Profile Section */}
-          <Typography variant="body1">
-            Welcome, <b>Admin</b>
-          </Typography>
-          <Avatar
-            alt="Admin"
-            src="https://via.placeholder.com/150"
-            sx={{ width: 40, height: 40, cursor: "pointer" }}
-            onClick={handleMenuClick}
-          />
-        </Box>
+          {/* Mobile Menu (Three Dots) - Visible on Mobile */}
+          {isMobile && (
+            <IconButton onClick={handleMobileMenuClick}>
+              <MoreVert sx={{ color: darkMode ? "#fff" : "#000" }} />
+            </IconButton>
+          )}
 
-        {/* Dropdown Menu */}
+          {/* Desktop Profile Section (Avatar and Name) */}
+          {!isMobile && (
+            <>
+              <Typography variant="body1">
+                Welcome, <b>Admin</b>
+              </Typography>
+              <Avatar
+                alt="Admin"
+                src="https://via.placeholder.com/150"
+                sx={{ width: 40, height: 40, cursor: "pointer" }}
+                onClick={handleMenuClick}
+              />
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+              >
+                <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
+            </>
+          )}
+        </Box>
+      </Toolbar>
+
+      {/* Mobile Menu (Drawer) */}
+      <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerToggle}>
+        <List>
+          <ListItem button onClick={handleProfileClick}>
+            <ListItemText primary="Profile" />
+          </ListItem>
+          <ListItem button onClick={handleLogout}>
+            <ListItemText primary="Logout" />
+          </ListItem>
+        </List>
+      </Drawer>
+
+      {/* Mobile Menu Options */}
+      {isMobile && (
         <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
+          anchorEl={mobileMenuAnchor}
+          open={Boolean(mobileMenuAnchor)}
+          onClose={handleMobileMenuClose}
         >
           <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>
-      </Toolbar>
+      )}
     </AppBar>
   );
 };
