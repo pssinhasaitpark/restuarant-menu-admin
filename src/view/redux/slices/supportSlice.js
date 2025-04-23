@@ -35,7 +35,6 @@ export const getSupportQueryById = createAsyncThunk(
   }
 );
 
-
 export const deleteSupportQuery = createAsyncThunk(
   'support/deleteSupportQuery',
   async (id, { rejectWithValue, dispatch }) => {

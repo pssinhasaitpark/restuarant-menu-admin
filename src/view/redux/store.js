@@ -13,6 +13,7 @@ import ordersReducer from './slices/orderSlice';
 import stockReducer from './slices/stockSlice';
 import salaryReducer from './slices/salarySlice';
 import dashboardReducer from './slices/dashboardSlice';
+import socialMediaReducer from './slices/socialMediaSlice';
 
 
 const store = configureStore({
@@ -31,6 +32,7 @@ const store = configureStore({
     stock: stockReducer,
     salary: salaryReducer,
     dashboard: dashboardReducer,
+    socialMedia: socialMediaReducer,
   },
 });
 
