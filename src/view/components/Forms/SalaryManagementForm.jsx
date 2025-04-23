@@ -21,6 +21,7 @@ const SalaryManagementForm = ({ open, handleClose, employeeId }) => {
   const [absenceDays, setAbsenceDays] = useState("");
   const [month, setMonth] = useState("");
   const [year, setYear] = useState(new Date().getFullYear());
+  const [paymentDate, setPaymentDate] = useState("");
   const dispatch = useDispatch();
 
   const months = [
@@ -38,6 +39,7 @@ const SalaryManagementForm = ({ open, handleClose, employeeId }) => {
       absence_days: parseInt(absenceDays),   
       month,
       year: parseInt(year),
+      payment_date: paymentDate,
     };
 
     dispatch(addSalaryDetails({ employeeId, salaryData }));
@@ -92,13 +94,13 @@ const SalaryManagementForm = ({ open, handleClose, employeeId }) => {
             </Grid>
 
             <Grid item xs={6}>
-              <FormControl  required>
+              <FormControl required>
                 <InputLabel>Month</InputLabel>
                 <Select
                   value={month}
                   label="Month"
                   onChange={(e) => setMonth(e.target.value)}
-                 sx={{width:"235px"}}
+                  sx={{ width: "235px" }}
                 >
                   {months.map((m) => (
                     <MenuItem key={m} value={m}>
@@ -117,6 +119,21 @@ const SalaryManagementForm = ({ open, handleClose, employeeId }) => {
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
                 type="number"
+                required
+              />
+            </Grid>
+
+            {/* Payment Date Field */}
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Payment Date"
+                value={paymentDate}
+                onChange={(e) => setPaymentDate(e.target.value)}
+                type="date"
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 required
               />
             </Grid>
