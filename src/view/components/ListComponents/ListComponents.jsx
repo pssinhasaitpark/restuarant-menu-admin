@@ -40,8 +40,8 @@ const ListComponent = ({
   return (
     <TableContainer component={Paper} sx={{ mt: 3 }}>
       <Table>
-        <TableHead>
-          <TableRow>
+        <TableHead >
+          <TableRow sx={{ backgroundColor:'#46934a', color: 'white' }}>
             {isRestaurant ? (
               <>
                 <TableCell>
@@ -154,6 +154,9 @@ const ListComponent = ({
               <>
                 <TableCell>
                   <strong>S.No</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>order_id</strong>
                 </TableCell>
                 <TableCell>
                   <strong>Token No.</strong>
@@ -290,6 +293,9 @@ const ListComponent = ({
                         <>
                           <TableCell rowSpan={item.items.length}>
                             {index + 1}
+                          </TableCell>
+                          <TableCell rowSpan={item.items.length}>
+                            {item.order_id}
                           </TableCell>
                           <TableCell rowSpan={item.items.length}>
                             {item.token_number}

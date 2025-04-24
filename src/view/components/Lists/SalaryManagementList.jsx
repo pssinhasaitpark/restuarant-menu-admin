@@ -18,20 +18,29 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  TextField,
 } from "@mui/material";
 import SalaryManagementForm from "../Forms/SalaryManagementForm";
 import SalarySlip from "../Salry Slip/SalarySlipPreview";
+import CustomPagination from "../CustomPagination/CustomPagination";
+
 const SalaryManagementList = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedSlip, setSelectedSlip] = useState(null);
   const [openSlipDialog, setOpenSlipDialog] = useState(false);
 
+  const [filterMonth, setFilterMonth] = useState("");
+  const [filterYear, setFilterYear] = useState("");
+  const [filterCreditDate, setFilterCreditDate] = useState("");
+
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(5);
+
   const dispatch = useDispatch();
   const staffId = new URLSearchParams(window.location.search).get("id");
 
-  const { staff, salaryDetails, restaurantDetails, loading, error } = useSelector(
-    (state) => state.salary
-  );
+  const { staff, salaryDetails, restaurantDetails, loading, error } =
+    useSelector((state) => state.salary);
 
   useEffect(() => {
     if (staffId) {
@@ -54,6 +63,33 @@ const SalaryManagementList = () => {
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const filteredSalaryDetails = salaryDetails.filter((row) => {
+    const isMonthMatch = filterMonth
+      ? row.month.toLowerCase().includes(filterMonth.toLowerCase())
+      : true;
+    const isYearMatch = filterYear
+      ? row.year.toString() === filterYear.toString()
+      : true;
+
+    const isDateMatch = filterCreditDate
+      ? new Date(row.payment_date).toISOString().split("T")[0] ===
+        filterCreditDate 
+      : true;
+
+    return isMonthMatch && isYearMatch && isDateMatch;
+  });
+
+  const filteredCount = filteredSalaryDetails.length;
+
+  const paginatedSalaryDetails = filteredSalaryDetails.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  );
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
   };
 
   return (
@@ -94,6 +130,48 @@ const SalaryManagementList = () => {
         </Grid>
       </Paper>
 
+      {/* Filter Section */}
+      <Paper elevation={3} sx={{ padding: 2, marginBottom: 2 }}>
+        <Typography sx={{ fontWeight: "bold", marginBottom: 2 }}>
+          Search Filter
+        </Typography>
+
+        <Grid container spacing={3} alignItems="center">
+          <Grid item xs={12} sm={3}>
+            <TextField
+              label="Month"
+              fullWidth
+              variant="outlined"
+              value={filterMonth}
+              onChange={(e) => setFilterMonth(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <TextField
+              label="Year"
+              fullWidth
+              variant="outlined"
+              value={filterYear}
+              onChange={(e) => setFilterYear(e.target.value)}
+              type="number"
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <TextField
+              label="Credit Date"
+              fullWidth
+              variant="outlined"
+              value={filterCreditDate}
+              onChange={(e) => setFilterCreditDate(e.target.value)}
+              type="date"
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Grid>
+        </Grid>
+      </Paper>
+
       {/* Table or Loader */}
       {loading ? (
         <CircularProgress />
@@ -101,7 +179,7 @@ const SalaryManagementList = () => {
         <Typography variant="h6" color="error" align="center" sx={{ mt: 4 }}>
           {error || "No salary details found."}
         </Typography>
-      ) : salaryDetails.length === 0 ? (
+      ) : paginatedSalaryDetails.length === 0 ? (
         <Typography variant="h6" align="center" sx={{ mt: 4 }}>
           No salary details found.
         </Typography>
@@ -123,7 +201,7 @@ const SalaryManagementList = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {salaryDetails.map((row, index) => (
+              {paginatedSalaryDetails.map((row, index) => (
                 <TableRow key={index}>
                   <TableCell>₹{row.base_salary}</TableCell>
                   <TableCell>₹{row.bonus}</TableCell>
@@ -172,7 +250,7 @@ const SalaryManagementList = () => {
             <SalarySlip
               data={selectedSlip}
               staff={staff}
-              restaurantDetails={restaurantDetails} 
+              restaurantDetails={restaurantDetails}
             />
           )}
         </DialogContent>
@@ -185,6 +263,13 @@ const SalaryManagementList = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Custom Pagination Component */}
+      <CustomPagination
+        page={page}
+        count={Math.ceil(filteredCount / pageSize)} // Use the filtered count
+        onChange={handlePageChange}
+      />
     </Box>
   );
 };

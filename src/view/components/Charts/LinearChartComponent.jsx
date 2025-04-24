@@ -13,7 +13,7 @@ const LineChartComponent = ({ totalOrders }) => {
   ]);
 
   useEffect(() => {
-    // Adjust the orders distribution based on totalOrders and round to nearest integer
+
     if (totalOrders) {
       const updatedChartData = [
         { day: 'Sunday', orders: Math.round(totalOrders * 0.1) },
@@ -27,9 +27,8 @@ const LineChartComponent = ({ totalOrders }) => {
 
       setChartData(updatedChartData);
     }
-  }, [totalOrders]); // Trigger effect whenever `totalOrders` changes
+  }, [totalOrders]); 
 
-  // Custom tooltip component to show data on hover
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       return (
