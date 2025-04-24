@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Dialog,
@@ -9,6 +8,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
 import ConfirmationDialog from "../Dialogbox/ConfirtmationDialog";
 import MenuForm from "../Forms/menu";
 import MenuCardList from "../Card/MenuCardList";
@@ -40,6 +40,9 @@ const RestaurantMenuList = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
 
+  const [viewMenuItem, setViewMenuItem] = useState(null);
+  const [openViewDialog, setOpenViewDialog] = useState(false);
+
   useEffect(() => {
     dispatch(getMenuItems({ page }));
   }, [dispatch, page]);
@@ -55,6 +58,7 @@ const RestaurantMenuList = () => {
     }
   }, [success, dispatch, page]);
 
+  // Open the Add/Edit Dialog
   const handleOpenDialog = () => {
     setEditingMenuItem(null);
     setIsEdit(false);
@@ -67,6 +71,7 @@ const RestaurantMenuList = () => {
     setIsEdit(false);
   };
 
+  // Handle Delete Menu Item
   const handleDeleteMenuItem = (id) => {
     setDeleteMenuItemId(id);
     setOpenDeleteDialog(true);
@@ -83,7 +88,8 @@ const RestaurantMenuList = () => {
 
       const newTotal = totalItems - 1;
       const newPageCount = Math.ceil(newTotal / 12);
-      const updatedPage = page > newPageCount && newPageCount > 0 ? newPageCount : page;
+      const updatedPage =
+        page > newPageCount && newPageCount > 0 ? newPageCount : page;
 
       setPage(updatedPage);
       dispatch(getMenuItems({ page: updatedPage }));
@@ -92,6 +98,7 @@ const RestaurantMenuList = () => {
     }
   };
 
+  // Handle Form Submit (Add or Edit Item)
   const handleFormSubmit = (values) => {
     const formData = new FormData();
     formData.append("category_name", values.category_name);
@@ -99,7 +106,10 @@ const RestaurantMenuList = () => {
     values.items.forEach((item, index) => {
       formData.append(`items[${index}][item_name]`, item.item_name);
       formData.append(`items[${index}][item_price]`, item.item_price);
-      formData.append(`items[${index}][item_description]`, item.item_description);
+      formData.append(
+        `items[${index}][item_description]`,
+        item.item_description
+      );
 
       if (item.images) {
         if (Array.isArray(item.images)) {
@@ -119,6 +129,7 @@ const RestaurantMenuList = () => {
     }
   };
 
+  // Handle Edit Item
   const handleEdit = async (item) => {
     setFormLoading(true);
     setIsEdit(true);
@@ -151,14 +162,25 @@ const RestaurantMenuList = () => {
     }
   };
 
-  const handleDuplicate = (item) => {
-    const { id, image, ...rest } = item;
-    setEditingMenuItem({ ...rest, name: `${item.name} (Copy)` });
+  // Handle View Menu Item Details
+  const handleView = async (item) => {
+    try {
+      const result = await dispatch(getMenuItemById(item.id));
+      const payload = result?.payload;
 
-    setIsEdit(false);
-    setOpenDialog(true);
+      if (payload) {
+        setViewMenuItem(payload);
+        setOpenViewDialog(true); // Open the dialog to show the details
+      } else {
+        alert("Item not found!");
+      }
+    } catch (error) {
+      console.error("Error fetching menu item details:", error);
+      alert("An error occurred while fetching the item details.");
+    }
   };
 
+  // Handle QR Code view
   const handleViewQR = async () => {
     const firstItem = menuItems.flatMap((cat) => cat.menu_items)[0];
     if (!firstItem) return alert("No menu item available");
@@ -171,25 +193,6 @@ const RestaurantMenuList = () => {
       alert("QR code not available");
     }
   };
-
-  const handleView = (item) => {
-    alert(`Viewing: ${item.name}`);
-  };
-
-  if (loading && !openDialog) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "50vh",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
 
   return (
     <Box sx={{ p: 3, textAlign: "center" }}>
@@ -214,12 +217,14 @@ const RestaurantMenuList = () => {
         </Button>
       </Box>
 
+      {/* Confirmation Dialog for Deleting an Item */}
       <ConfirmationDialog
         open={openDeleteDialog}
         onClose={() => setOpenDeleteDialog(false)}
         onConfirm={handleConfirmDelete}
       />
 
+      {/* Menu Items List */}
       {menuItems.length === 0 ? (
         <Box
           sx={{
@@ -239,13 +244,80 @@ const RestaurantMenuList = () => {
           items={menuItems}
           onEdit={handleEdit}
           onDelete={handleDeleteMenuItem}
-          onDuplicate={handleDuplicate}
           onView={handleView}
           page={page}
           setPage={setPage}
         />
       )}
 
+      {/* Menu Item Details Dialog */}
+      <Dialog
+        open={openViewDialog}
+        onClose={() => setOpenViewDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <Box sx={{ p: 2 }}>
+          {viewMenuItem ? (
+            <Box>
+              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                Item Name: {viewMenuItem.item_name}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                Category:{" "}
+                {viewMenuItem.category
+                  ? viewMenuItem.category.category_name
+                  : "N/A"}
+              </Typography>
+
+              <Typography variant="body1" color="textSecondary" sx={{ mt: 1 }}>
+                Description:{" "}
+                {viewMenuItem.item_description || "No description available."}
+              </Typography>
+
+              <Typography variant="body2" color="textPrimary" sx={{ mt: 1 }}>
+                Price: ₹{viewMenuItem.item_price}
+              </Typography>
+
+              <Typography sx={{ mt: 1 }}>
+                Image:
+                {viewMenuItem.images && viewMenuItem.images.length > 0 ? (
+                  <Box sx={{ mt: 2 }}>
+                    {viewMenuItem.images.map((image, index) => (
+                      <Box key={index} sx={{ mb: 2 }}>
+                        <img
+                          src={image.url}
+                          alt={`${viewMenuItem.item_name} image ${index + 1}`}
+                          style={{
+                            width: "100%",
+                            maxHeight: "300px",
+                            objectFit: "cover",
+                            borderRadius: "8px",
+                          }}
+                        />
+                      </Box>
+                    ))}
+                  </Box>
+                ) : (
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{ mt: 2 }}
+                  >
+                    No preview available.
+                  </Typography>
+                )}
+              </Typography>
+            </Box>
+          ) : (
+            <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+              <CircularProgress />
+            </Box>
+          )}
+        </Box>
+      </Dialog>
+
+      {/* Add/Edit Menu Item Dialog */}
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}
@@ -269,6 +341,7 @@ const RestaurantMenuList = () => {
         </Box>
       </Dialog>
 
+      {/* Snackbar for Success Message */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000}

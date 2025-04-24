@@ -32,7 +32,7 @@ const MenuCardList = ({
         category_name: category.category_name,
       }))
     )
-    .filter(Boolean); 
+    .filter(Boolean);
 
   const pageCount = Math.ceil(flatItems.length / itemsPerPage);
 
@@ -53,7 +53,7 @@ const MenuCardList = ({
 
   return (
     <>
-      <Box display="flex" flexWrap="wrap" justifyContent="start" gap={2} >
+      <Box display="flex" flexWrap="wrap" justifyContent="start" gap={2}>
         {paginatedItems.map((item, index) => (
           <Box
             key={item.id}
