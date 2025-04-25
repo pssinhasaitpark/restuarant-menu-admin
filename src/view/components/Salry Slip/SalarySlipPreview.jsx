@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 
 const SalarySlip = ({ data, staff, restaurantDetails }) => {
-  console.log("Restaurant Details:", restaurantDetails); // Debugging line
   const handlePrint = () => {
     window.print();
   };

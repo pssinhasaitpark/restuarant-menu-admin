@@ -96,7 +96,7 @@ const SalaryManagementList = () => {
     <Box p={3}>
       {/* Employee Info */}
       <Paper elevation={3} sx={{ padding: 2, marginBottom: 2 }}>
-        <Grid container spacing={16} alignItems="center">
+        <Grid container spacing={2} alignItems="center" justifyContent="space-between">
           <Grid item xs={12} sm={2.5}>
             <Typography variant="subtitle1">
               <strong>Employee ID:</strong> {salaryDetails[0]?.employee_id}

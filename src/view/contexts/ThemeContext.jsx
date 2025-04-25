@@ -8,7 +8,6 @@ export const ThemeProviderComponent = ({ children }) => {
     localStorage.getItem("theme") === "dark"
   );
 
-  // MUI Theme Customization
   const theme = createTheme({
     palette: {
       mode: darkMode ? "dark" : "light",
@@ -17,7 +16,6 @@ export const ThemeProviderComponent = ({ children }) => {
     },
   });
 
-  // Toggle Theme and Save in localStorage
   const toggleTheme = () => {
     setDarkMode((prevMode) => {
       const newMode = !prevMode;

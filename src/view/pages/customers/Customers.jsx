@@ -77,8 +77,6 @@ const CustomerList = () => {
   if (error && !customers.length) {
     console.error("Customer fetch error:", error); 
   }
-  
-
   return (
     <Box sx={{ p: 3, textAlign: "center", mt: 4 }}>
       <Grid container spacing={2} mb={4}>
