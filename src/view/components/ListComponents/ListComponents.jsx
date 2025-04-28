@@ -41,7 +41,7 @@ const ListComponent = ({
     <TableContainer component={Paper} sx={{ mt: 3 }}>
       <Table>
         <TableHead >
-          <TableRow sx={{ backgroundColor:'#46934a', color: 'white' }}>
+          <TableRow sx={{ backgroundColor:'#bcddbe', color: 'white' }}>
             {isRestaurant ? (
               <>
                 <TableCell>

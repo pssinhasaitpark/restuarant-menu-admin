@@ -286,7 +286,7 @@ const RestaurantMenuList = () => {
                     {viewMenuItem.images.map((image, index) => (
                       <Box key={index} sx={{ mb: 2 }}>
                         <img
-                          src={image.url}
+                          src={image} // Image URL from the API response
                           alt={`${viewMenuItem.item_name} image ${index + 1}`}
                           style={{
                             width: "100%",

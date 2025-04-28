@@ -22,7 +22,9 @@ const MenuForm = ({ initialValues, onSubmit, isEdit }) => {
         {
           item_name: "",
           item_price: "",
+          item_description: "",
           images: null,
+          imagePreview: "",
         },
       ],
     },
@@ -143,25 +145,24 @@ const MenuForm = ({ initialValues, onSubmit, isEdit }) => {
                         </IconButton>
                       </label>
 
-                      {item.images && (
+                      {/* Render image preview or existing image URL */}
+                      {item.imagePreview || (item.images && item.images[0]) ? (
                         <Box mt={1} display="flex" alignItems="center" gap={1}>
-                          {item.imagePreview && (
-                            <img
-                              src={item.imagePreview}
-                              alt="Preview"
-                              style={{
-                                width: 60,
-                                height: 60,
-                                borderRadius: 8,
-                                objectFit: "cover",
-                              }}
-                            />
-                          )}
-
-                          <Typography variant="caption">
-                            {item.images.name}
-                          </Typography>
-
+                          {/* If item.imagePreview exists, show it, otherwise show image URL */}
+                          <img
+                            src={
+                              item.imagePreview
+                                ? item.imagePreview
+                                : item.images && item.images[0] // Display the first image URL from the array
+                            }
+                            alt="Preview"
+                            style={{
+                              width: 60,
+                              height: 60,
+                              borderRadius: 8,
+                              objectFit: "cover",
+                            }}
+                          />
                           <IconButton
                             onClick={() => {
                               formik.setFieldValue(
@@ -179,7 +180,7 @@ const MenuForm = ({ initialValues, onSubmit, isEdit }) => {
                             <DeleteIcon fontSize="small" />
                           </IconButton>
                         </Box>
-                      )}
+                      ) : null}
                     </Grid>
                   </Grid>
 
@@ -201,7 +202,9 @@ const MenuForm = ({ initialValues, onSubmit, isEdit }) => {
                     arrayHelpers.push({
                       item_name: "",
                       item_price: "",
+                      item_description: "",
                       images: null,
+                      imagePreview: "",
                     })
                   }
                 >
