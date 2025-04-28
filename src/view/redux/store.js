@@ -14,6 +14,7 @@ import stockReducer from './slices/stockSlice';
 import salaryReducer from './slices/salarySlice';
 import dashboardReducer from './slices/dashboardSlice';
 import socialMediaReducer from './slices/socialMediaSlice';
+import restaurantDetailsReducer from './slices/resturanrDetailsSlice';
 
 
 const store = configureStore({
@@ -33,6 +34,7 @@ const store = configureStore({
     salary: salaryReducer,
     dashboard: dashboardReducer,
     socialMedia: socialMediaReducer,
+    restaurantDetails: restaurantDetailsReducer,
   },
 });
 

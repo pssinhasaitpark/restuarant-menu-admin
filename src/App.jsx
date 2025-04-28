@@ -21,6 +21,7 @@ import SalaryManagementList from "./view/components/Lists/SalaryManagementList";
 import SocialMedia from "./view/pages/SocialMedia/SocialMedia";
 
 import PrivateRoute from "./view/routes/PrivateRoutes"; 
+import RestaurantDetails from "./view/components/Forms/ResturantDetails";
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
           <Route path="/reviews" element={<Review />} />
           <Route path="/salarylist" element={<SalaryManagementList />} />
           <Route path="/socialmedia" element={<SocialMedia />} />
+          <Route path="/resturantdetails" element={<RestaurantDetails />} />
         </Route>
       </Route>
     </Routes>

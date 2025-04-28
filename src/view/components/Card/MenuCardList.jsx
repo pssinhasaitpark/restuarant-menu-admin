@@ -101,11 +101,6 @@ const MenuCardList = ({
                       <DeleteIcon />
                     </IconButton>
                   </Tooltip>
-                  {/* <Tooltip title="Duplicate">
-                    <IconButton onClick={() => onDuplicate(item)} color="info">
-                      <FileCopyIcon />
-                    </IconButton>
-                  </Tooltip> */}
                 </Box>
               </CardContent>
             </Card>

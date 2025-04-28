@@ -15,6 +15,7 @@ import {
   Feedback,
   SupervisedUserCircle,
   Diversity1,
+  AbcOutlined,
 } from "@mui/icons-material";
 import {
   Drawer,
@@ -74,6 +75,7 @@ const Sidebar = ({ drawerOpen, toggleDrawer }) => {
       { text: "Support", icon: <SupportAgent />, path: "/support" },
       { text: "Customer Experience", icon: <HotelClass />, path: "/reviews" },
       { text: "Social Media", icon: <Diversity1 />, path: "/socialmedia" },
+      { text: "About Us", icon: <AbcOutlined />, path: "/resturantdetails" },
     ];
   }
   

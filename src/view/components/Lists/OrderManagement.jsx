@@ -12,14 +12,16 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  TableBody,Button,
+  TableBody,
+  Button,
 } from "@mui/material";
 import ListComponent from "../ListComponents/ListComponents";
+import CustomPagination from "../CustomPagination/CustomPagination";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrders } from "../../redux/slices/orderSlice";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { debounce } from "lodash";  
+import { debounce } from "lodash";
 
 const OrderManagement = () => {
   const dispatch = useDispatch();
@@ -34,6 +36,9 @@ const OrderManagement = () => {
     orderStatus: "",
   });
 
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 5;
+
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [invoiceDialogOpen, setInvoiceDialogOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
@@ -45,6 +50,7 @@ const OrderManagement = () => {
   useEffect(() => {
     setFilteredOrders(orders);
   }, [orders]);
+
   const debouncedSearch = debounce((value) => {
     const filtered = orders.filter((order) => {
       if (filters.filterType === "orderId") {
@@ -60,7 +66,13 @@ const OrderManagement = () => {
     });
 
     setFilteredOrders(filtered);
-  }, 500); 
+  }, 500);
+
+  useEffect(() => {
+    if (page > Math.ceil(filteredOrders.length / itemsPerPage)) {
+      setPage(1);
+    }
+  }, [filteredOrders, page, itemsPerPage]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -103,6 +115,10 @@ const OrderManagement = () => {
   const calculateTotal = (items) =>
     items.reduce((sum, item) => sum + item.quantity * item.price, 0);
 
+  const startIndex = (page - 1) * itemsPerPage;
+  const paginatedOrders = filteredOrders.slice(startIndex, startIndex + itemsPerPage);
+  const pageCount = Math.ceil(filteredOrders.length / itemsPerPage);
+
   return (
     <Box p={3}>
       <style>
@@ -134,41 +150,43 @@ const OrderManagement = () => {
         `}
       </style>
 
-
-
-        <Grid container spacing={2} sx={{mt:2}}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              select
-              fullWidth
-              label="Filter Type"
-              name="filterType"
-              value={filters.filterType}
-              onChange={handleFilterChange}
-            >
-              <MenuItem value="orderId">Order ID</MenuItem>
-              <MenuItem value="customerName">Customer Name</MenuItem>
-              <MenuItem value="tokenNumber">Token Number</MenuItem>
-            </TextField>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Search"
-              name="searchValue"
-              value={filters.searchValue}
-              onChange={handleFilterChange}
-              placeholder="Search by Order ID, Name, or Token Number"
-            />
-          </Grid>
+      <Grid container spacing={2} sx={{ mt: 2 }}>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            select
+            fullWidth
+            label="Filter Type"
+            name="filterType"
+            value={filters.filterType}
+            onChange={handleFilterChange}
+          >
+            <MenuItem value="orderId">Order ID</MenuItem>
+            <MenuItem value="customerName">Customer Name</MenuItem>
+            <MenuItem value="tokenNumber">Token Number</MenuItem>
+          </TextField>
         </Grid>
-   
+        <Grid item xs={12} sm={6}>
+          <TextField
+            fullWidth
+            label="Search"
+            name="searchValue"
+            value={filters.searchValue}
+            onChange={handleFilterChange}
+            placeholder="Search by Order ID, Name, or Token Number"
+          />
+        </Grid>
+      </Grid>
 
       <ListComponent
-        items={filteredOrders}
+        items={paginatedOrders}
         onEdit={handleGenerateInvoice}
         onDelete={() => {}}
         isOrder={true}
+      />
+      <CustomPagination
+        page={page}
+        count={pageCount}
+        onChange={(_, value) => setPage(value)}
       />
 
       <Dialog open={invoiceDialogOpen} onClose={handleCloseDialog}>
@@ -179,7 +197,7 @@ const OrderManagement = () => {
               <Box className="header" mb={2} textAlign="center">
                 <Typography variant="h6" fontWeight="bold">
                   🍽️
-                   {selectedInvoice.restaurant?.name || "Restaurant Name"}
+                  {selectedInvoice.restaurant?.name || "Restaurant Name"}
                 </Typography>
                 <Typography variant="body2">
                   Address: {selectedInvoice.restaurant?.location || "N/A"}
